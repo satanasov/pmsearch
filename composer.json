@@ -1,0 +1,26 @@
+{
+	"name": "anavaro/pmsearch",
+	"type": "phpbb-extension",
+	"description": "Adds support for event medals",
+	"homepage": "notavailable",
+	"version": "1.0.0",
+	"time": "2014-09-21",
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Stanislav Atanasov",
+			"email": "lucifer@anavaro.com",
+			"homepage": "http://anavaro.com",
+			"role": "Lead Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3"
+	},
+	"extra": {
+		"display-name": "phpBB 3.1 PM Search",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.1.0-RC2,<3.2.*@dev"
+		}
+	}
+}
