@@ -40,14 +40,14 @@ class release_1_0_0 extends \phpbb\db\migration\migration
 		);
 	}
 
-	//lets create the needed table	
+	//lets create the needed table
 	public function update_schema()
 	{
 		return array(
 			'add_tables'    => array(
 				$this->table_prefix . 'privmsgs_swl'	=> array(
 					'COLUMNS'	=> array(
-						'word_id'	=> array('UINT', NULL, 'auto_increment'),
+						'word_id'	=> array('UINT', null, 'auto_increment'),
 						'word_text'	=> array('VCHAR_UNI', ''),
 						'word_common'	=> array('BOOL', 0),
 						'word_count'	=> array('UINT', 0),

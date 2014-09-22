@@ -10,12 +10,6 @@
 
 namespace anavaro\pmsearch\acp;
 
-if (!defined('IN_PHPBB'))
-{
-    exit;
-}
-
-
 /**
 * @package module_install
 */
@@ -30,12 +24,10 @@ class acp_pmsearch_info
 			'modes'		=> array(
 				'main'		=> array(
 					'title'		=> 'ACP_PRVOPT', 
-					'auth' 		=> 'ext_anavaro/pmsearch && acl_a_user', 
+					'auth' 		=> 'ext_anavaro/pmsearch && acl_a_user',
 					'cat'		=> array('ACP_PMSEARCH_GRP')
 				),
 			),
 		);
 	}
 }
-
-?>
