@@ -7,6 +7,7 @@ Features
 --
 
   ACP
+  
     - Enable PM Indexing
     - GLobaly allow PM search
     - Individual user permissions to allow PM Search
@@ -14,9 +15,12 @@ Features
     - [TODO] Build/delete Indexing statistics
   
   UCP
+  
     - [TODO] Search form in user PM screan
     - [TODO] New UCP module shoung search results
+	
   Events
+  
     - [TODO] Register every PM for indexing
     
     
