@@ -41,7 +41,7 @@ class acp_pmsearch_module
 				{
 					$config->set('pmsearch_pm_index', 0);
 				}
-				elseif ($pm_index == '2')
+				else if ($pm_index == '2')
 				{
 					$config->set('pmsearch_pm_index', 1);
 				}
@@ -53,7 +53,7 @@ class acp_pmsearch_module
 				{
 					$config->set('pmsearch_search', 0);
 				}
-				elseif ($pm_index == '2')
+				else if ($pm_index == '2')
 				{
 					$config->set('pmsearch_search', 1);
 				}
@@ -71,4 +71,3 @@ class acp_pmsearch_module
 		}
 	}
 }
-
