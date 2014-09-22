@@ -1,0 +1,84 @@
+<!-- INCLUDE overall_header.html -->
+<h1>{L_PMSEARCH_ADMIN}</h1>
+<p>{L_PMSEARCH_ADMIN_EXPLAIN}</p>
+<form id="acp_board" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_PMSEARCH_SETTINGS}</legend>
+		<dl>
+			<dt>
+				<label>{L_PMSEARCH_PM_INDEX}</label><br />
+				<span>{L_PMSEARCH_PM_INDEX_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<label><input type="radio" id="pm_index" name="pm_index" value="2"<!-- IF PM_INDEX --> checked<!-- ENDIF -->>{L_YES}</label><label><input type="radio" id="pm_index" name="pm_index" value="1"<!-- IF !PM_INDEX --> checked<!-- ENDIF -->>{L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label>{L_PMSEARCH_PM_SEARCH}</label><br />
+				<span>{L_PMSEARCH_PM_SEARCH_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<label><input type="radio" id="pm_search" name="pm_search" value="2"<!-- IF PM_SEARCH --> checked<!-- ENDIF -->>{L_YES}</label><label><input type="radio" id="pm_search" name="pm_search" value="1"<!-- IF !PM_SEARCH --> checked<!-- ENDIF -->>{L_NO}</label>
+			</dd>
+		</dl>
+	</fieldset>
+	<p class="submit-buttons">
+	<input type="hidden" name="target_user" value="{S_USER_ID}">
+	<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+	<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</fieldset>
+</form>
+<!-- BEGIN normal -->
+<form id="acp_search_main" method="post" action="{U_ACTION}">
+			<fieldset class="tabulated">
+
+				<legend>{L_INDEX_STATS}{L_COLON} {normal.L_NAME}</legend>
+
+				<table class="table1">
+					<caption>{normal.L_NAME}</caption>
+					<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" />
+				<thead>
+				<tr>
+					<th>{L_STATISTIC}</th>
+					<th>{L_VALUE}</th>
+					<th>{L_STATISTIC}</th>
+					<th>{L_VALUE}</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{normal.STATISTIC_1}{L_COLON}</td>
+						<td>{normal.VALUE_1}</td>
+						<td>{normal.STATISTIC_2}{L_COLON}</td>
+						<td>{normal.VALUE_2}</td>
+					</tr>
+				</tbody>
+				</table>
+
+			<p class="quick">
+			<!-- IF !normal.DISSALOW -->
+			<input type="hidden" name="target_index" value="normal" />
+			<!-- IF normal.S_INDEXED -->
+				<input type="hidden" name="action_index" value="delete" />
+			<!-- IF normal.CONTINUE -->
+				<a href="{normal.CONTINUE_URL}" >{L_CONTINUE}</a>
+			<!-- ENDIF -->
+				<input class="button2" type="submit" value="{L_DELETE_INDEX}" onclick="popup_progress_bar('delete');" />
+			<!-- ELSE -->
+				<input type="hidden" name="action_index" value="create" />
+				<input class="button2" type="submit" value="{L_CREATE_INDEX}" onclick="popup_progress_bar('create');" />
+			<!-- ENDIF -->
+			<!-- ENDIF -->
+			</p>
+			{S_FORM_TOKEN}
+			</fieldset>
+<form>
+<!-- END normal -->
+
+<div id="page-footer">
+Advanced PM Search By <a href="http://www.anavaro.com/">Lucifer</a>
+</div>
+
+
+<!-- INCLUDE overall_footer.html -->
