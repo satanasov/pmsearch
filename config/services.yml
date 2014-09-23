@@ -1,0 +1,27 @@
+services:
+    anavaro.pmsearch.listener:
+        class: anavaro\pmsearch\event\main_listener
+        arguments:
+            - @auth
+            - @cache
+            - @config
+            - @dbal.conn
+            - @request
+            - @template
+            - @user
+            - @anavaro.pmsearch.fulltext_native
+            - %core.root_path%
+            - %core.php_ext%
+            - %core.table_prefix%
+        tags:
+            - { name: event.listener }
+    anavaro.pmsearch.fulltext_native:
+        class: anavaro\pmsearch\search\fulltext_native
+        arguments:
+            - @auth
+            - @config
+            - @dbal.conn
+            - @user
+            - %core.table_prefix%
+            - %core.root_path%
+            - %core.php_ext%
