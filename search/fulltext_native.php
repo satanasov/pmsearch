@@ -1774,38 +1774,58 @@ class fulltext_native
 	}
 
 
-	/**
-	* Returns a list of options for the ACP to display
+/**
+	* Removes old entries from the search results table and removes searches with keywords that contain a word in $words.
 	*/
-	public function acp()
+	function destroy_cache($words, $authors = false)
 	{
-		/**
-		* if we need any options, copied from fulltext_native for now, will have to be adjusted or removed
-		*/
+		global $db, $cache, $config;
 
-		$tpl = '
-		<dl>
-			<dt><label for="fulltext_native_load_upd">' . $this->user->lang['YES_SEARCH_UPDATE'] . $this->user->lang['COLON'] . '</label><br /><span>' . $this->user->lang['YES_SEARCH_UPDATE_EXPLAIN'] . '</span></dt>
-			<dd><label><input type="radio" id="fulltext_native_load_upd" name="config[fulltext_native_load_upd]" value="1"' . (($this->config['fulltext_native_load_upd']) ? ' checked="checked"' : '') . ' class="radio" /> ' . $this->user->lang['YES'] . '</label><label><input type="radio" name="config[fulltext_native_load_upd]" value="0"' . ((!$this->config['fulltext_native_load_upd']) ? ' checked="checked"' : '') . ' class="radio" /> ' . $this->user->lang['NO'] . '</label></dd>
-		</dl>
-		<dl>
-			<dt><label for="fulltext_native_min_chars">' . $this->user->lang['MIN_SEARCH_CHARS'] . $this->user->lang['COLON'] . '</label><br /><span>' . $this->user->lang['MIN_SEARCH_CHARS_EXPLAIN'] . '</span></dt>
-			<dd><input id="fulltext_native_min_chars" type="number" size="3" maxlength="3" min="0" max="255" name="config[fulltext_native_min_chars]" value="' . (int) $this->config['fulltext_native_min_chars'] . '" /></dd>
-		</dl>
-		<dl>
-			<dt><label for="fulltext_native_max_chars">' . $this->user->lang['MAX_SEARCH_CHARS'] . $this->user->lang['COLON'] . '</label><br /><span>' . $this->user->lang['MAX_SEARCH_CHARS_EXPLAIN'] . '</span></dt>
-			<dd><input id="fulltext_native_max_chars" type="number" size="3" maxlength="3" min="0" max="255" name="config[fulltext_native_max_chars]" value="' . (int) $this->config['fulltext_native_max_chars'] . '" /></dd>
-		</dl>
-		<dl>
-			<dt><label for="fulltext_native_common_thres">' . $this->user->lang['COMMON_WORD_THRESHOLD'] . $this->user->lang['COLON'] . '</label><br /><span>' . $this->user->lang['COMMON_WORD_THRESHOLD_EXPLAIN'] . '</span></dt>
-			<dd><input id="fulltext_native_common_thres" type="text" size="3" maxlength="3" name="config[fulltext_native_common_thres]" value="' . (double) $this->config['fulltext_native_common_thres'] . '" /> %</dd>
-		</dl>
-		';
+		// clear all searches that searched for the specified words
+		if (sizeof($words))
+		{
+			$sql_where = '';
+			foreach ($words as $word)
+			{
+				$sql_where .= " OR search_keywords " . $db->sql_like_expression($db->get_any_char() . $word . $db->get_any_char());
+			}
 
-		// These are fields required in the config table
-		return array(
-			'tpl'		=> $tpl,
-			'config'	=> array('fulltext_native_load_upd' => 'bool', 'fulltext_native_min_chars' => 'integer:0:255', 'fulltext_native_max_chars' => 'integer:0:255', 'fulltext_native_common_thres' => 'double:0:100')
-		);
+			$sql = 'SELECT search_key
+				FROM ' . SEARCH_RESULTS_TABLE . "
+				WHERE search_keywords LIKE '%*%' $sql_where";
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$cache->destroy('_search_results_' . $row['search_key']);
+			}
+			$db->sql_freeresult($result);
+		}
+
+		// clear all searches that searched for the specified authors
+		if (is_array($authors) && sizeof($authors))
+		{
+			$sql_where = '';
+			foreach ($authors as $author)
+			{
+				$sql_where .= (($sql_where) ? ' OR ' : '') . 'search_authors ' . $db->sql_like_expression($db->get_any_char() . ' ' . (int) $author . ' ' . $db->get_any_char());
+			}
+
+			$sql = 'SELECT search_key
+				FROM ' . SEARCH_RESULTS_TABLE . "
+				WHERE $sql_where";
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$cache->destroy('_search_results_' . $row['search_key']);
+			}
+			$db->sql_freeresult($result);
+		}
+
+		$sql = 'DELETE
+			FROM ' . SEARCH_RESULTS_TABLE . '
+			WHERE search_time < ' . (time() - $config['search_store_results']);
+		$db->sql_query($sql);
 	}
 }

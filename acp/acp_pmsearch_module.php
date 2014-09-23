@@ -67,8 +67,7 @@ class acp_pmsearch_module
 				if($config['pmsearch_pm_index'])
 				{
 					$action_index = request_var('action_index', '');
-					$this->state = explode(',', $config['search_pm_indexing_state']);
-
+					$this->state = explode(',', $config['search_pm_indexing_state']);					
 					if (isset($_POST['cancel']))
 					{
 						$action = '';
@@ -160,6 +159,8 @@ class acp_pmsearch_module
 									{
 										$db->sql_freeresult($result);
 									}
+									$this->var_display($this->state[2]);
+									$post_counter += $this->batch_size;
 									// save the current state
 									if ($post_counter <= $this->max_post_id)
 									{
@@ -175,7 +176,7 @@ class acp_pmsearch_module
 									// just an estimation as it includes deleted posts
 									$num_posts = $config['num_posts'];
 									$config['num_posts'] = min($config['num_posts'], $post_counter);
-									$this->search->tidy($target);
+									$this->search->tidy();
 									$config['num_posts'] = $num_posts;
 
 									if ($post_counter <= $this->max_post_id)

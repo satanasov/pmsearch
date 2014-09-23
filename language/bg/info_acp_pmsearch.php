@@ -53,4 +53,15 @@ $lang = array_merge($lang, array(
 
 	//ACP ACL
 	'ACL_U_PMSEARCH'	=> 'Потребителя може да търси в личните си съобщения',
+
+	//Other ACP
+	'LOG_PMSEARCH_INDEX_REMOVED'	=> '<strong>Премахнат търсещият индекс за </strong><br />» %s',
+	'TOTAL_WORDS'							=> 'Общо индексирани думи',
+	'TOTAL_MATCHES'							=> 'Общ сбор връзки между думи и PMs.',
+	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
+		2	=> 'All posts up to post id %2$d have now been indexed, of which %1$d posts were within this step.<br />',
+	),
+	'SEARCH_INDEX_CREATE_REDIRECT_RATE'		=> array(
+		2	=> 'The current rate of indexing is approximately %1$.1f posts per second.<br />Indexing in progress…',
+	),
 ));
