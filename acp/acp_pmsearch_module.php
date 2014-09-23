@@ -169,6 +169,7 @@ class acp_pmsearch_module
 									else
 									{
 										$this->state = array('');
+										add_log('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
 									}
 									$this->save_state();
 

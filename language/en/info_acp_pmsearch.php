@@ -50,12 +50,15 @@ $lang = array_merge($lang, array(
 	'PMSEARCH_PM_INDEX_EXPLAIN'	=> 'From here you enable the PM indexing<br /><b>(WARNING! Without indexing the PM Search will not work)</b>',
 	'PMSEARCH_PM_SEARCH'	=>	'Enable Search',
 	'PMSEARCH_PM_SEARCH_EXPLAIN'	=> 'Globaly enable (or disable) searching in PMs',
+	'DELETE_INDEX'	=> 'Delete indexes',
+	'CREATE_INDEX'	=> 'Create indexes',
 
 	//ACP ACL
 	'ACL_U_PMSEARCH'	=> 'User can search in his PMs',
 
 	//Other ACP
 	'LOG_PMSEARCH_INDEX_REMOVED'	=> '<strong>Removed search index for</strong><br />» %s',
+	'LOG_PMSEARCH_INDEX_CREATED'	=> '<strong>Created search index for</strong><br />» %s',
 	'TOTAL_WORDS'							=> 'Total number of indexed words',
 	'TOTAL_MATCHES'							=> 'Total number of word to post relations indexed',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(

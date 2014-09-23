@@ -50,12 +50,15 @@ $lang = array_merge($lang, array(
 	'PMSEARCH_PM_INDEX_EXPLAIN'	=> 'От тук можете да пуснете индексацята на лични съобщения <br /><b>(Внимание! Търсенето няма да раоти без активирана индексация)</b>',
 	'PMSEARCH_PM_SEARCH'	=>	'Разреши търсенето',
 	'PMSEARCH_PM_SEARCH_EXPLAIN'	=> 'Глобално разрешаване (или забраняване) на търсенето в личните съобщения',
+	'DELETE_INDEX'	=> 'Изтрий индексите',
+	'CREATE_INDEX'	=> 'Създай индексите',
 
 	//ACP ACL
 	'ACL_U_PMSEARCH'	=> 'Потребителя може да търси в личните си съобщения',
 
 	//Other ACP
 	'LOG_PMSEARCH_INDEX_REMOVED'	=> '<strong>Премахнат търсещият индекс за </strong><br />» %s',
+	'LOG_PMSEARCH_INDEX_CREATED'	=> '<strong>Създаден търсещ индекс за </strong><br />» %s',
 	'TOTAL_WORDS'							=> 'Общо индексирани думи',
 	'TOTAL_MATCHES'							=> 'Общ сбор връзки между думи и PMs.',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
