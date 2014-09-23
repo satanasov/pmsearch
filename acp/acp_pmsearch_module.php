@@ -67,7 +67,7 @@ class acp_pmsearch_module
 				if($config['pmsearch_pm_index'])
 				{
 					$action_index = request_var('action_index', '');
-					$this->state = explode(',', $config['search_pm_indexing_state']);					
+					$this->state = explode(',', $config['search_pm_indexing_state']);			
 					if (isset($_POST['cancel']))
 					{
 						$action = '';
@@ -137,7 +137,7 @@ class acp_pmsearch_module
 										WHERE msg_id >= ' . (int) ($post_counter + 1) . '
 											AND msg_id <= ' . (int) ($post_counter + $this->batch_size);
 									$result = $db->sql_query($sql);
-									
+
 									$buffer = $db->sql_buffer_nested_transactions();
 									
 									if ($buffer)
@@ -147,11 +147,11 @@ class acp_pmsearch_module
 
 										$db->sql_freeresult($result);
 									}
-									
+
 									$i = 0;
 									while ($row = ($buffer ? $rows[$i++] : $db->sql_fetchrow($result)))
 									{
-										//	Indexing 
+										//	Indexing
 										$this->search->index('post', $row['msg_id'], $row['message_text'], $row['message_subject'], $row['author_id']);
 										$row_count++;
 									}
@@ -196,12 +196,12 @@ class acp_pmsearch_module
 					$search = null;
 					$error = false;
 					$search_options = '';
-					
+
 					if ($this->init_search($search_types[0], $search, $error) || !method_exists($search, 'index_created'))
 					{
 						continue;
 					}
-					
+
 					//Let's build normal
 					$name = $search->get_name();
 
@@ -266,7 +266,7 @@ class acp_pmsearch_module
 
 		set_config('search_pm_indexing_state', implode(',', $this->state), true);
 	}
-	
+
 	function get_max_post_id()
 	{
 		global $db;
