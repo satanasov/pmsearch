@@ -112,7 +112,7 @@ class fulltext_native
 		$this->table_prefix = $table_prefix;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
-		
+
 		$this->word_length = array('min' => $this->config['fulltext_native_min_chars'], 'max' => $this->config['fulltext_native_max_chars']);
 
 		/**
@@ -137,7 +137,7 @@ class fulltext_native
 	*/
 	public function get_name()
 	{
-		return 'phpBB Native Fulltext';
+		return 'phpBB PM Native Fulltext';
 	}
 
 	/**
@@ -1209,16 +1209,8 @@ class fulltext_native
 	* @param	int		$poster_id	Post author's user id
 	* @param	int		$forum_id	The id of the forum in which the post is located
 	*/
-	public function index($mode, $post_id, &$message, &$subject, $poster_id, $forum_id)
+	public function index($mode, $post_id, &$message, &$subject, $poster_id)
 	{
-		if (!$this->config['fulltext_native_load_upd'])
-		{
-			/**
-			* The search indexer is disabled, return
-			*/
-			return;
-		}
-
 		// Split old and new post/subject to obtain array of 'words'
 		$split_text = $this->split_message($message);
 		$split_title = $this->split_message($subject);
@@ -1234,7 +1226,7 @@ class fulltext_native
 			$words['del']['title'] = array();
 
 			$sql = 'SELECT w.word_id, w.word_text, m.title_match
-				FROM ' . SEARCH_WORDLIST_TABLE . ' w, ' . SEARCH_WORDMATCH_TABLE . " m
+				FROM ' . PRIVMSGS_TABLE . '_swl' . ' w, ' . PRIVMSGS_TABLE . '_swm' . " m
 				WHERE m.post_id = $post_id
 					AND w.word_id = m.word_id";
 			$result = $this->db->sql_query($sql);
@@ -1271,7 +1263,7 @@ class fulltext_native
 		if (sizeof($unique_add_words))
 		{
 			$sql = 'SELECT word_id, word_text
-				FROM ' . SEARCH_WORDLIST_TABLE . '
+				FROM ' . PRIVMSGS_TABLE . '_swl' . '
 				WHERE ' . $this->db->sql_in_set('word_text', $unique_add_words);
 			$result = $this->db->sql_query($sql);
 
@@ -1293,7 +1285,7 @@ class fulltext_native
 					$sql_ary[] = array('word_text' => (string) $word, 'word_count' => 0);
 				}
 				$this->db->sql_return_on_error(true);
-				$this->db->sql_multi_insert(SEARCH_WORDLIST_TABLE, $sql_ary);
+				$this->db->sql_multi_insert(PRIVMSGS_TABLE . '_swl', $sql_ary);
 				$this->db->sql_return_on_error(false);
 			}
 			unset($new_words, $sql_ary);
@@ -1316,13 +1308,13 @@ class fulltext_native
 					$sql_in[] = $cur_words[$word_in][$word];
 				}
 
-				$sql = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE . '
+				$sql = 'DELETE FROM ' . PRIVMSGS_TABLE . '_swm' . '
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in) . '
 						AND post_id = ' . intval($post_id) . "
 						AND title_match = $title_match";
 				$this->db->sql_query($sql);
 
-				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '_swl' . '
 					SET word_count = word_count - 1
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in) . '
 						AND word_count > 0';
@@ -1339,13 +1331,13 @@ class fulltext_native
 
 			if (sizeof($word_ary))
 			{
-				$sql = 'INSERT INTO ' . SEARCH_WORDMATCH_TABLE . ' (post_id, word_id, title_match)
+				$sql = 'INSERT INTO ' . PRIVMSGS_TABLE . '_swm' . ' (post_id, word_id, title_match)
 					SELECT ' . (int) $post_id . ', word_id, ' . (int) $title_match . '
-					FROM ' . SEARCH_WORDLIST_TABLE . '
+					FROM ' . PRIVMSGS_TABLE . '_swl' . '
 					WHERE ' . $this->db->sql_in_set('word_text', $word_ary);
 				$this->db->sql_query($sql);
 
-				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '_swl' . '
 					SET word_count = word_count + 1
 					WHERE ' . $this->db->sql_in_set('word_text', $word_ary);
 				$this->db->sql_query($sql);
@@ -1371,7 +1363,7 @@ class fulltext_native
 		if (sizeof($post_ids))
 		{
 			$sql = 'SELECT w.word_id, w.word_text, m.title_match
-				FROM ' . SEARCH_WORDMATCH_TABLE . ' m, ' . SEARCH_WORDLIST_TABLE . ' w
+				FROM ' . PRIVMSGS_TABLE . '_swm' . ' m, ' . PRIVMSGS_TABLE . '_swl' . ' w
 				WHERE ' . $this->db->sql_in_set('m.post_id', $post_ids) . '
 					AND w.word_id = m.word_id';
 			$result = $this->db->sql_query($sql);
@@ -1393,7 +1385,7 @@ class fulltext_native
 
 			if (sizeof($title_word_ids))
 			{
-				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '_swl' . '
 					SET word_count = word_count - 1
 					WHERE ' . $this->db->sql_in_set('word_id', $title_word_ids) . '
 						AND word_count > 0';
@@ -1402,7 +1394,7 @@ class fulltext_native
 
 			if (sizeof($message_word_ids))
 			{
-				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '_swl' . '
 					SET word_count = word_count - 1
 					WHERE ' . $this->db->sql_in_set('word_id', $message_word_ids) . '
 						AND word_count > 0';
@@ -1412,7 +1404,7 @@ class fulltext_native
 			unset($title_word_ids);
 			unset($message_word_ids);
 
-			$sql = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE . '
+			$sql = 'DELETE FROM ' . PRIVMSGS_TABLE . '_swm' . '
 				WHERE ' . $this->db->sql_in_set('post_id', $post_ids);
 			$this->db->sql_query($sql);
 		}
@@ -1442,7 +1434,7 @@ class fulltext_native
 			$common_threshold = ((double) $this->config['fulltext_native_common_thres']) / 100.0;
 			// First, get the IDs of common words
 			$sql = 'SELECT word_id, word_text
-				FROM ' . SEARCH_WORDLIST_TABLE . '
+				FROM ' . PRIVMSGS_TABLE . '_swl' . '
 				WHERE word_count > ' . floor($this->config['num_posts'] * $common_threshold) . '
 					OR word_common = 1';
 			$result = $this->db->sql_query($sql);
@@ -1458,7 +1450,7 @@ class fulltext_native
 			if (sizeof($sql_in))
 			{
 				// Flag the words
-				$sql = 'UPDATE ' . SEARCH_WORDLIST_TABLE . '
+				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '_swl' . '
 					SET word_common = 1
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in);
 				$this->db->sql_query($sql);
@@ -1468,7 +1460,7 @@ class fulltext_native
 				set_config('search_last_gc', time(), true);
 
 				// Delete the matches
-				$sql = 'DELETE FROM ' . SEARCH_WORDMATCH_TABLE . '
+				$sql = 'DELETE FROM ' . PRIVMSGS_TABLE . '_swm' . '
 					WHERE ' . $this->db->sql_in_set('word_id', $sql_in);
 				$this->db->sql_query($sql);
 			}
@@ -1493,14 +1485,14 @@ class fulltext_native
 		{
 			case 'sqlite':
 			case 'sqlite3':
-				$this->db->sql_query('DELETE FROM ' . SEARCH_WORDLIST_TABLE);
-				$this->db->sql_query('DELETE FROM ' . SEARCH_WORDMATCH_TABLE);
+				$this->db->sql_query('DELETE FROM ' . PRIVMSGS_TABLE . '_swl');
+				$this->db->sql_query('DELETE FROM ' . PRIVMSGS_TABLE . '_swm');
 				$this->db->sql_query('DELETE FROM ' . SEARCH_RESULTS_TABLE);
 			break;
 
 			default:
-				$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_WORDLIST_TABLE);
-				$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_WORDMATCH_TABLE);
+				$this->db->sql_query('TRUNCATE TABLE ' . PRIVMSGS_TABLE . '_swl');
+				$this->db->sql_query('TRUNCATE TABLE ' . PRIVMSGS_TABLE . '_swm');
 				$this->db->sql_query('TRUNCATE TABLE ' . SEARCH_RESULTS_TABLE);
 			break;
 		}
@@ -1536,8 +1528,8 @@ class fulltext_native
 
 	protected function get_stats()
 	{
-		$this->stats['total_words']		= $this->db->get_estimated_row_count(SEARCH_WORDLIST_TABLE);
-		$this->stats['total_matches']	= $this->db->get_estimated_row_count(SEARCH_WORDMATCH_TABLE);
+		$this->stats['total_words']		= $this->db->get_estimated_row_count(PRIVMSGS_TABLE . '_swl');
+		$this->stats['total_matches']	= $this->db->get_estimated_row_count(PRIVMSGS_TABLE . '_swm');
 	}
 
 	/**
