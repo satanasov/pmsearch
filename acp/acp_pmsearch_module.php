@@ -67,7 +67,7 @@ class acp_pmsearch_module
 				if($config['pmsearch_pm_index'])
 				{
 					$action_index = request_var('action_index', '');
-					$this->state = explode(',', $config['search_pm_indexing_state']);			
+					$this->state = explode(',', $config['search_pm_indexing_state']);
 					if (isset($_POST['cancel']))
 					{
 						$action = '';
@@ -139,7 +139,7 @@ class acp_pmsearch_module
 									$result = $db->sql_query($sql);
 
 									$buffer = $db->sql_buffer_nested_transactions();
-									
+
 									if ($buffer)
 									{
 										$rows = $db->sql_fetchrowset($result);
