@@ -1358,7 +1358,7 @@ class fulltext_native
 	/**
 	* Removes entries from the wordmatch table for the specified post_ids
 	*/
-	public function index_remove($post_ids, $author_ids, $forum_ids)
+	public function index_remove($post_ids)
 	{
 		if (sizeof($post_ids))
 		{
@@ -1409,7 +1409,7 @@ class fulltext_native
 			$this->db->sql_query($sql);
 		}
 
-		$this->destroy_cache(array_unique($word_texts), array_unique($author_ids));
+		$this->destroy_cache(array_unique($word_texts));
 	}
 
 	/**
