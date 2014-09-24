@@ -30,7 +30,16 @@ class release_1_0_0 extends \phpbb\db\migration\migration
 				)
 			)),
 			//Add extension UCP module
-			//TODO!
+			array('module.add', array(
+				'ucp',
+				'UCP_PM',
+				array(
+					'module_basename'	=> '\anavaro\pmsearch\ucp\ucp_pmsearch_module',
+					'module_modes' => array('search'),
+					'module_auth'	=> 'ext_anavaro/pmsearch',
+				),
+
+			)),
 			//set configs
 			array('config.add', array('pmsearch_version', '1.0.0')),
 			array('config.add', array('pmsearch_pm_index', true)),
@@ -73,7 +82,7 @@ class release_1_0_0 extends \phpbb\db\migration\migration
 			),
 		);
 	}
-
+/*
 	public function revert_schema()
 	{
 		return array(
@@ -83,5 +92,5 @@ class release_1_0_0 extends \phpbb\db\migration\migration
 			),
 		);
 	}
-
+*/
 }
