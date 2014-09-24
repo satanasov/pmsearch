@@ -44,7 +44,7 @@ class ucp_pmsearch_module
 						'S_KEYWORDS'	=>	$keywords
 					));
 				}
-				
+
 				$this->search = null;
 				$error = false;
 				$search_types = $this->get_search_types();
@@ -55,12 +55,9 @@ class ucp_pmsearch_module
 				$search_count = 0;
 				$this->search->split_keywords($keywords, $terms);
 				$id_ary = array();
-				
-				
 			break;
 		}
 		//$this->var_display($tid);
-		
 	}
 	//Define some helper functions
 	function get_search_types()
@@ -75,7 +72,7 @@ class ucp_pmsearch_module
 			->core_path('ext/anavaro/pmsearch/search/')
 			->get_classes();
 	}
-	
+
 	/**
 	* Initialises a search backend object
 	*
