@@ -16,18 +16,12 @@ namespace anavaro\pmsearch\search;
 /**
 * @ignore
 */
-if (defined('SEARCH_RESULT_NOT_IN_CACHE'))
-{
-	define('SEARCH_RESULT_NOT_IN_CACHE', 0);
-}
-if (defined('SEARCH_RESULT_IN_CACHE'))
-{
-	define('SEARCH_RESULT_IN_CACHE', 1);
-}
-if (defined('SEARCH_RESULT_INCOMPLETE'))
-{
-	define('SEARCH_RESULT_INCOMPLETE', 2);
-}
+defined('SEARCH_RESULT_NOT_IN_CACHE') or define('SEARCH_RESULT_NOT_IN_CACHE', 0);
+
+defined('SEARCH_RESULT_IN_CACHE') or define('SEARCH_RESULT_IN_CACHE', 1);
+
+defined('SEARCH_RESULT_INCOMPLETE') or define('SEARCH_RESULT_INCOMPLETE', 2);
+
 /**
 * phpBB's own db driven fulltext search, version 2
 */
@@ -121,7 +115,6 @@ class fulltext_native
 		$this->table_prefix = $table_prefix;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
-
 		$this->word_length = array('min' => $this->config['fulltext_native_min_chars'], 'max' => $this->config['fulltext_native_max_chars']);
 
 		/**
@@ -325,7 +318,7 @@ class fulltext_native
 		if (sizeof($exact_words))
 		{
 			$sql = 'SELECT word_id, word_text, word_common
-				FROM ' . SEARCH_WORDLIST_TABLE . '
+				FROM ' . PRIVMSGS_TABLE . '_swl' . '
 				WHERE ' . $this->db->sql_in_set('word_text', $exact_words) . '
 				ORDER BY word_count ASC';
 			$result = $this->db->sql_query($sql);
@@ -333,13 +326,6 @@ class fulltext_native
 			// store an array of words and ids, remove common words
 			while ($row = $this->db->sql_fetchrow($result))
 			{
-				if ($row['word_common'])
-				{
-					$this->common_words[] = $row['word_text'];
-					$common_ids[$row['word_text']] = (int) $row['word_id'];
-					continue;
-				}
-
 				$words[$row['word_text']] = (int) $row['word_id'];
 			}
 			$this->db->sql_freeresult($result);
@@ -487,7 +473,6 @@ class fulltext_native
 				}
 			}
 		}
-
 		// Return true if all words are not common words
 		if (sizeof($exact_words) - sizeof($this->common_words) > 0)
 		{
@@ -499,24 +484,17 @@ class fulltext_native
 	/**
 	* Performs a search on keywords depending on display specific params. You have to run split_keywords() first
 	*
-	* @param	string		$type				contains either posts or topics depending on what should be searched for
 	* @param	string		$fields				contains either titleonly (topic titles should be searched), msgonly (only message bodies should be searched), firstpost (only subject and body of the first post should be searched) or all (all post bodies and subjects should be searched)
 	* @param	string		$terms				is either 'all' (use query as entered, words without prefix should default to "have to be in field") or 'any' (ignore search query parts and just return all posts that contain any of the specified words)
-	* @param	array		$sort_by_sql		contains SQL code for the ORDER BY part of a query
-	* @param	string		$sort_key			is the key of $sort_by_sql for the selected sorting
 	* @param	string		$sort_dir			is either a or d representing ASC and DESC
 	* @param	string		$sort_days			specifies the maximum amount of days a post may be old
-	* @param	array		$ex_fid_ary			specifies an array of forum ids which should not be searched
-	* @param	string		$post_visibility	specifies which types of posts the user can view in which forums
-	* @param	int			$topic_id			is set to 0 or a topic id, if it is not 0 then only posts in this topic should be searched
 	* @param	array		$author_ary			an array of author ids if the author should be ignored during the search the array is empty
-	* @param	string		$author_name		specifies the author match, when ANONYMOUS is also a search-match
 	* @param	array		&$id_ary			passed by reference, to be filled with ids for the page specified by $start and $per_page, should be ordered
 	* @param	int			$start				indicates the first index of the page
 	* @param	int			$per_page			number of ids each page is supposed to contain
 	* @return	boolean|int						total number of results
 	*/
-	public function keyword_search($type, $fields, $terms, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $post_visibility, $topic_id, $author_ary, $author_name, &$id_ary, &$start, $per_page)
+	public function keyword_search($fields, $terms, $sort_dir, $sort_days = 0, $author_ary, &$id_ary, &$start, $per_page)
 	{
 		// No keywords? No posts.
 		if (empty($this->search_query))
@@ -524,6 +502,11 @@ class fulltext_native
 			return false;
 		}
 
+		// define tables we will change
+		$swl_table = PRIVMSGS_TABLE . '_swl';
+		$swm_table = PRIVMSGS_TABLE . '_swm';
+		$message_table = PRIVMSGS_TABLE;
+		$message_to_table = PRIVMSGS_TO_TABLE;
 		// we can't search for negatives only
 		if (empty($this->must_contain_ids))
 		{
@@ -543,16 +526,10 @@ class fulltext_native
 			serialize($must_contain_ids),
 			serialize($must_not_contain_ids),
 			serialize($must_exclude_one_ids),
-			$type,
 			$fields,
 			$terms,
 			$sort_days,
-			$sort_key,
-			$topic_id,
-			implode(',', $ex_fid_ary),
-			$post_visibility,
 			implode(',', $author_ary),
-			$author_name,
 		)));
 
 		// try reading the results from cache
@@ -570,14 +547,17 @@ class fulltext_native
 		$w_num = 0;
 
 		$sql_array = array(
-			'SELECT'	=> ($type == 'posts') ? 'p.post_id' : 'p.topic_id',
+			'SELECT'	=> 'msg.msg_id',
 			'FROM'		=> array(
-				SEARCH_WORDMATCH_TABLE	=> array(),
-				SEARCH_WORDLIST_TABLE	=> array(),
+				$swm_table	=> array(),
+				$swl_table	=> array(),
 			),
 			'LEFT_JOIN' => array(array(
-				'FROM'	=> array(POSTS_TABLE => 'p'),
-				'ON'	=> 'm0.post_id = p.post_id',
+				'FROM'	=> array(
+					$message_to_table	=> 'msg',
+				),
+				'WHERE'	=> '',
+				'ON'	=> 'm0.post_id = msg.msg_id',
 			)),
 		);
 
@@ -590,22 +570,12 @@ class fulltext_native
 			case 'titleonly':
 				$title_match = 'title_match = 1';
 				$group_by = false;
-			// no break
-			case 'firstpost':
-				$left_join_topics = true;
-				$sql_where[] = 'p.post_id = t.topic_first_post_id';
 			break;
 
 			case 'msgonly':
 				$title_match = 'title_match = 0';
 				$group_by = false;
 			break;
-		}
-
-		if ($type == 'topics')
-		{
-			$left_join_topics = true;
-			$group_by = true;
 		}
 
 		/**
@@ -625,7 +595,7 @@ class fulltext_native
 					if (is_string($id))
 					{
 						$sql_array['LEFT_JOIN'][] = array(
-							'FROM'	=> array(SEARCH_WORDLIST_TABLE => 'w' . $w_num),
+							'FROM'	=> array($swl_table => 'w' . $w_num),
 							'ON'	=> "w$w_num.word_text LIKE $id"
 						);
 						$word_ids[] = "w$w_num.word_id";
@@ -645,7 +615,7 @@ class fulltext_native
 			}
 			else if (is_string($subquery))
 			{
-				$sql_array['FROM'][SEARCH_WORDLIST_TABLE][] = 'w' . $w_num;
+				$sql_array['FROM'][$swl_table][] = 'w' . $w_num;
 
 				$sql_where[] = "w$w_num.word_text LIKE $subquery";
 				$sql_where[] = "m$m_num.word_id = w$w_num.word_id";
@@ -658,7 +628,7 @@ class fulltext_native
 				$sql_where[] = "m$m_num.word_id = $subquery";
 			}
 
-			$sql_array['FROM'][SEARCH_WORDMATCH_TABLE][] = 'm' . $m_num;
+			$sql_array['FROM'][$swm_table][] = 'm' . $m_num;
 
 			if ($title_match)
 			{
@@ -677,7 +647,7 @@ class fulltext_native
 			if (is_string($subquery))
 			{
 				$sql_array['LEFT_JOIN'][] = array(
-					'FROM'	=> array(SEARCH_WORDLIST_TABLE => 'w' . $w_num),
+					'FROM'	=> array($swl_table => 'w' . $w_num),
 					'ON'	=> "w$w_num.word_text LIKE $subquery"
 				);
 
@@ -691,7 +661,7 @@ class fulltext_native
 		if (sizeof($this->must_not_contain_ids))
 		{
 			$sql_array['LEFT_JOIN'][] = array(
-				'FROM'	=> array(SEARCH_WORDMATCH_TABLE => 'm' . $m_num),
+				'FROM'	=> array($swm_table => 'm' . $m_num),
 				'ON'	=> $this->db->sql_in_set("m$m_num.word_id", $this->must_not_contain_ids) . (($title_match) ? " AND m$m_num.$title_match" : '') . " AND m$m_num.post_id = m0.post_id"
 			);
 
@@ -707,7 +677,7 @@ class fulltext_native
 				if (is_string($id))
 				{
 					$sql_array['LEFT_JOIN'][] = array(
-						'FROM'	=> array(SEARCH_WORDLIST_TABLE => 'w' . $w_num),
+						'FROM'	=> array($swl_table => 'w' . $w_num),
 						'ON'	=> "w$w_num.word_text LIKE $id"
 					);
 					$id = "w$w_num.word_id";
@@ -717,7 +687,7 @@ class fulltext_native
 				}
 
 				$sql_array['LEFT_JOIN'][] = array(
-					'FROM'	=> array(SEARCH_WORDMATCH_TABLE => 'm' . $m_num),
+					'FROM'	=> array($swm_table => 'm' . $m_num),
 					'ON'	=> "m$m_num.word_id = $id AND m$m_num.post_id = m0.post_id" . (($title_match) ? " AND m$m_num.$title_match" : '')
 				);
 				$is_null_joins[] = "m$m_num.word_id IS NULL";
@@ -727,35 +697,16 @@ class fulltext_native
 			$sql_where[] = '(' . implode(' OR ', $is_null_joins) . ')';
 		}
 
-		$sql_where[] = $post_visibility;
-
-		if ($topic_id)
-		{
-			$sql_where[] = 'p.topic_id = ' . $topic_id;
-		}
-
 		if (sizeof($author_ary))
 		{
-			if ($author_name)
-			{
-				// first one matches post of registered users, second one guests and deleted users
-				$sql_author = '(' . $this->db->sql_in_set('p.poster_id', array_diff($author_ary, array(ANONYMOUS)), false, true) . ' OR p.post_username ' . $author_name . ')';
-			}
-			else
-			{
-				$sql_author = $this->db->sql_in_set('p.poster_id', $author_ary);
-			}
+			$folders = array(-2, -1);
+			$sql_author = '((' . $this->db->sql_in_set('msg.author_id', $author_ary) . ' or ' . $this->db->sql_in_set('msg.user_id', $author_ary) . ') and (msg.user_id <> msg.author_id or (msg.user_id = msg.author_id and ' . $this->db->sql_in_set('msg.folder_id', $folders, true) . ')))';
 			$sql_where[] = $sql_author;
-		}
-
-		if (sizeof($ex_fid_ary))
-		{
-			$sql_where[] = $this->db->sql_in_set('p.forum_id', $ex_fid_ary, true);
 		}
 
 		if ($sort_days)
 		{
-			$sql_where[] = 'p.post_time >= ' . (time() - ($sort_days * 86400));
+			$sql_where[] = 'msg.message_time >= ' . (time() - ($sort_days * 86400));
 		}
 
 		$sql_array['WHERE'] = implode(' AND ', $sql_where);
@@ -766,15 +717,6 @@ class fulltext_native
 		{
 			$sql = '';
 			$sql_array_count = $sql_array;
-
-			if ($left_join_topics)
-			{
-				$sql_array_count['LEFT_JOIN'][] = array(
-					'FROM'	=> array(TOPICS_TABLE => 't'),
-					'ON'	=> 'p.topic_id = t.topic_id'
-				);
-			}
-
 			switch ($this->db->get_sql_layer())
 			{
 				case 'mysql4':
@@ -788,14 +730,14 @@ class fulltext_native
 
 				case 'sqlite':
 				case 'sqlite3':
-					$sql_array_count['SELECT'] = ($type == 'posts') ? 'DISTINCT p.post_id' : 'DISTINCT p.topic_id';
-					$sql = 'SELECT COUNT(' . (($type == 'posts') ? 'post_id' : 'topic_id') . ') as total_results
+					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
+					$sql = 'SELECT COUNT(msg_id) as total_results
 							FROM (' . $this->db->sql_build_query('SELECT', $sql_array_count) . ')';
 
 				// no break
 
 				default:
-					$sql_array_count['SELECT'] = ($type == 'posts') ? 'COUNT(DISTINCT p.post_id) AS total_results' : 'COUNT(DISTINCT p.topic_id) AS total_results';
+					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
 					$sql = (!$sql) ? $this->db->sql_build_query('SELECT', $sql_array_count) : $sql;
 
 					$result = $this->db->sql_query($sql);
@@ -813,45 +755,19 @@ class fulltext_native
 		}
 
 		// Build sql strings for sorting
-		$sql_sort = $sort_by_sql[$sort_key] . (($sort_dir == 'a') ? ' ASC' : ' DESC');
-
-		switch ($sql_sort[0])
-		{
-			case 'u':
-				$sql_array['FROM'][USERS_TABLE] = 'u';
-				$sql_where[] = 'u.user_id = p.poster_id ';
-			break;
-
-			case 't':
-				$left_join_topics = true;
-			break;
-
-			case 'f':
-				$sql_array['FROM'][FORUMS_TABLE] = 'f';
-				$sql_where[] = 'f.forum_id = p.forum_id';
-			break;
-		}
-
-		if ($left_join_topics)
-		{
-			$sql_array['LEFT_JOIN'][] = array(
-				'FROM'	=> array(TOPICS_TABLE => 't'),
-				'ON'	=> 'p.topic_id = t.topic_id'
-			);
-		}
-
 		$sql_array['WHERE'] = implode(' AND ', $sql_where);
-		$sql_array['GROUP_BY'] = ($group_by) ? (($type == 'posts') ? 'p.post_id' : 'p.topic_id') . ', ' . $sort_by_sql[$sort_key] : '';
-		$sql_array['ORDER_BY'] = $sql_sort;
+		//$sql_array['GROUP_BY'] = ($group_by) ? (($type == 'posts') ? 'p.post_id' : 'p.topic_id') . ', ' . $sort_by_sql[$sort_key] : '';
+		$sql_array['ORDER_BY'] = 'msg.msg_id DESC';
 
 		unset($sql_where, $sql_sort, $group_by);
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		var_dump($sql);
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$id_ary[] = (int) $row[(($type == 'posts') ? 'post_id' : 'topic_id')];
+			$id_ary[] = (int) $row['msg_id'];
 		}
 		$this->db->sql_freeresult($result);
 
@@ -860,11 +776,10 @@ class fulltext_native
 		{
 			// Count rows for the executed queries. Replace $select within $sql with SQL_CALC_FOUND_ROWS, and run it
 			$sql_array_copy = $sql_array;
-			$sql_array_copy['SELECT'] = 'SQL_CALC_FOUND_ROWS p.post_id ';
+			$sql_array_copy['SELECT'] = 'SQL_CALC_FOUND_ROWS msg.msg_id ';
 
 			$sql_calc = $this->db->sql_build_query('SELECT', $sql_array_copy);
 			unset($sql_array_copy);
-
 			$this->db->sql_query($sql_calc);
 			$this->db->sql_freeresult($result);
 
@@ -887,7 +802,7 @@ class fulltext_native
 
 			while ($row = $this->db->sql_fetchrow($result))
 			{
-				$id_ary[] = (int) $row[(($type == 'posts') ? 'post_id' : 'topic_id')];
+				$id_ary[] = (int) $row['msg_id'];
 			}
 			$this->db->sql_freeresult($result);
 
@@ -1782,8 +1697,7 @@ class fulltext_native
 		return $ret;
 	}
 
-
-/**
+	/**
 	* Removes old entries from the search results table and removes searches with keywords that contain a word in $words.
 	*/
 	function destroy_cache($words, $authors = false)
@@ -1836,5 +1750,204 @@ class fulltext_native
 			FROM ' . SEARCH_RESULTS_TABLE . '
 			WHERE search_time < ' . (time() - $config['search_store_results']);
 		$db->sql_query($sql);
+	}
+
+	/**
+	* Retrieves cached search results
+	*
+	* @param string $search_key		an md5 string generated from all the passed search options to identify the results
+	* @param int	&$result_count	will contain the number of all results for the search (not only for the current page)
+	* @param array 	&$id_ary 		is filled with the ids belonging to the requested page that are stored in the cache
+	* @param int 	&$start			indicates the first index of the page
+	* @param int 	$per_page		number of ids each page is supposed to contain
+	* @param string $sort_dir		is either a or d representing ASC and DESC
+	*
+	* @return int SEARCH_RESULT_NOT_IN_CACHE or SEARCH_RESULT_IN_CACHE or SEARCH_RESULT_INCOMPLETE
+	*/
+	function obtain_ids($search_key, &$result_count, &$id_ary, &$start, $per_page, $sort_dir)
+	{
+		global $cache;
+
+		if (!($stored_ids = $cache->get('_search_results_' . $search_key)))
+		{
+			// no search results cached for this search_key
+			return SEARCH_RESULT_NOT_IN_CACHE;
+		}
+		else
+		{
+			$result_count = $stored_ids[-1];
+			$reverse_ids = ($stored_ids[-2] != $sort_dir) ? true : false;
+			$complete = true;
+
+			// Change start parameter in case out of bounds
+			if ($result_count)
+			{
+				if ($start < 0)
+				{
+					$start = 0;
+				}
+				else if ($start >= $result_count)
+				{
+					$start = floor(($result_count - 1) / $per_page) * $per_page;
+				}
+			}
+
+			// change the start to the actual end of the current request if the sort direction differs
+			// from the dirction in the cache and reverse the ids later
+			if ($reverse_ids)
+			{
+				$start = $result_count - $start - $per_page;
+
+				// the user requested a page past the last index
+				if ($start < 0)
+				{
+					return SEARCH_RESULT_NOT_IN_CACHE;
+				}
+			}
+
+			for ($i = $start, $n = $start + $per_page; ($i < $n) && ($i < $result_count); $i++)
+			{
+				if (!isset($stored_ids[$i]))
+				{
+					$complete = false;
+				}
+				else
+				{
+					$id_ary[] = $stored_ids[$i];
+				}
+			}
+			unset($stored_ids);
+
+			if ($reverse_ids)
+			{
+				$id_ary = array_reverse($id_ary);
+			}
+
+			if (!$complete)
+			{
+				return SEARCH_RESULT_INCOMPLETE;
+			}
+			return SEARCH_RESULT_IN_CACHE;
+		}
+	}
+
+	/**
+	* Caches post/topic ids
+	*
+	* @param string $search_key		an md5 string generated from all the passed search options to identify the results
+	* @param string $keywords 		contains the keywords as entered by the user
+	* @param array	$author_ary		an array of author ids, if the author should be ignored during the search the array is empty
+	* @param int 	$result_count	contains the number of all results for the search (not only for the current page)
+	* @param array	&$id_ary 		contains a list of post or topic ids that shall be cached, the first element
+	* 	must have the absolute index $start in the result set.
+	* @param int	$start			indicates the first index of the page
+	* @param string $sort_dir		is either a or d representing ASC and DESC
+	*
+	* @return null
+	*/
+	function save_ids($search_key, $keywords, $author_ary, $result_count, &$id_ary, $start, $sort_dir)
+	{
+		global $cache, $config, $db, $user;
+
+		$length = min(sizeof($id_ary), $config['search_block_size']);
+
+		// nothing to cache so exit
+		if (!$length)
+		{
+			return;
+		}
+
+		$store_ids = array_slice($id_ary, 0, $length);
+
+		// create a new resultset if there is none for this search_key yet
+		// or add the ids to the existing resultset
+		if (!($store = $cache->get('_search_results_' . $search_key)))
+		{
+			// add the current keywords to the recent searches in the cache which are listed on the search page
+			if (!empty($keywords) || sizeof($author_ary))
+			{
+				$sql = 'SELECT search_time
+					FROM ' . SEARCH_RESULTS_TABLE . '
+					WHERE search_key = \'' . $db->sql_escape($search_key) . '\'';
+				$result = $db->sql_query($sql);
+
+				if (!$db->sql_fetchrow($result))
+				{
+					$sql_ary = array(
+						'search_key'		=> $search_key,
+						'search_time'		=> time(),
+						'search_keywords'	=> $keywords,
+						'search_authors'	=> ' ' . implode(' ', $author_ary) . ' '
+					);
+
+					$sql = 'INSERT INTO ' . SEARCH_RESULTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+					$db->sql_query($sql);
+				}
+				$db->sql_freeresult($result);
+			}
+
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET user_last_search = ' . time() . '
+				WHERE user_id = ' . $user->data['user_id'];
+			$db->sql_query($sql);
+
+			$store = array(-1 => $result_count, -2 => $sort_dir);
+			$id_range = range($start, $start + $length - 1);
+		}
+		else
+		{
+			// we use one set of results for both sort directions so we have to calculate the indizes
+			// for the reversed array and we also have to reverse the ids themselves
+			if ($store[-2] != $sort_dir)
+			{
+				$store_ids = array_reverse($store_ids);
+				$id_range = range($store[-1] - $start - $length, $store[-1] - $start - 1);
+			}
+			else
+			{
+				$id_range = range($start, $start + $length - 1);
+			}
+		}
+
+		$store_ids = array_combine($id_range, $store_ids);
+
+		// append the ids
+		if (is_array($store_ids))
+		{
+			$store += $store_ids;
+
+			// if the cache is too big
+			if (sizeof($store) - 2 > 20 * $config['search_block_size'])
+			{
+				// remove everything in front of two blocks in front of the current start index
+				for ($i = 0, $n = $id_range[0] - 2 * $config['search_block_size']; $i < $n; $i++)
+				{
+					if (isset($store[$i]))
+					{
+						unset($store[$i]);
+					}
+				}
+
+				// remove everything after two blocks after the current stop index
+				end($id_range);
+				for ($i = $store[-1] - 1, $n = current($id_range) + 2 * $config['search_block_size']; $i > $n; $i--)
+				{
+					if (isset($store[$i]))
+					{
+						unset($store[$i]);
+					}
+				}
+			}
+			$cache->put('_search_results_' . $search_key, $store, $config['search_store_results']);
+
+			$sql = 'UPDATE ' . SEARCH_RESULTS_TABLE . '
+				SET search_time = ' . time() . '
+				WHERE search_key = \'' . $db->sql_escape($search_key) . '\'';
+			$db->sql_query($sql);
+		}
+
+		unset($store);
+		unset($store_ids);
+		unset($id_range);
 	}
 }

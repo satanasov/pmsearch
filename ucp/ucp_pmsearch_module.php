@@ -24,7 +24,7 @@ class ucp_pmsearch_module
 	}
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache, $request;
+		global $db, $user, $auth, $template, $cache, $request, $phpbb_container;
 		global $config, $SID, $phpbb_root_path, $phpbb_admin_path, $phpEx, $k_config, $table_prefix;
 		//$this->var_display($action);
 		switch ($mode)
@@ -36,25 +36,50 @@ class ucp_pmsearch_module
 				));
 
 				$terms = $request->variable('terms', 'any');
-				$keywords = $request->variable('keywords', '');
+				$keywords = utf8_normalize_nfc($request->variable('keywords', '', true));
 
 				if ($keywords)
 				{
 					$template->assign_vars(array(
 						'S_KEYWORDS'	=>	$keywords
 					));
-				}
+				
 
-				$this->search = null;
-				$error = false;
-				$search_types = $this->get_search_types();
-				if ($this->init_search($search_types[0], $this->search, $error))
-				{
-					trigger_error($error . adm_back_link($this->u_action), E_USER_WARNING);
+					$this->search = null;
+					$error = false;
+					$search_types = $this->get_search_types();
+					if ($this->init_search($search_types[0], $this->search, $error))
+					{
+						trigger_error($error . adm_back_link($this->u_action), E_USER_WARNING);
+					}
+					$search_count = 0;
+					$startFrom = $request->variable('start', 0);
+					$this->search->split_keywords($keywords, $terms);
+					$id_ary = array();
+
+					$user_id = array(
+						'' => $user->data['user_id']
+					);
+					$search_count = $this->search->keyword_search('all', 'all', 'a', 0, $user_id, $id_ary, $startFrom, 50);
+					if ($search_count > 0)
+					{
+						$pagination = $phpbb_container->get('pagination');
+						$base_url = append_sid('ucp.php?i=' . $id . '&mode=' . $mode . '&keywords=' . $keywords . '&terms=' . $terms);
+						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 50, $startFrom);
+						$pageNumber = $pagination->get_on_page(50, $startFrom);
+						$template->assign_vars(array(
+							'PAGE_NUMBER'	=> $pagination->on_page($total_paginated, $this->config['news_number'], $start),
+							'TOTAL_MESSAGES'	=> $search_count
+						));
+					}
+					
+					else
+					{
+						trigger_error('NO_RESULTS_FOUND');
+					}
+					// After we got the the search count we go deeper
+				
 				}
-				$search_count = 0;
-				$this->search->split_keywords($keywords, $terms);
-				$id_ary = array();
 			break;
 		}
 		//$this->var_display($tid);

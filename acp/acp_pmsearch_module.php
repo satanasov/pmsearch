@@ -159,7 +159,7 @@ class acp_pmsearch_module
 									{
 										$db->sql_freeresult($result);
 									}
-									$this->var_display($this->state[2]);
+									//$this->var_display($this->state[2]);
 									$post_counter += $this->batch_size;
 									// save the current state
 									if ($post_counter <= $this->max_post_id)

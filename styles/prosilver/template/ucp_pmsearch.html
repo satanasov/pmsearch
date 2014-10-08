@@ -14,4 +14,13 @@
 		<input type="submit" name="submit" value="{L_SEARCH}" class="button1" />
 	</fieldset>
 </form>
+
+		<div class="pagination">
+				{TOTAL_MESSAGES}
+				<!-- IF .pagination -->
+					<!-- INCLUDE pagination.html -->
+				<!-- ELSE -->
+					 &bull; {PAGE_NUMBER}
+				<!-- ENDIF -->
+		</div>
 <!-- INCLUDE ucp_footer.html -->
