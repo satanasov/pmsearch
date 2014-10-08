@@ -43,7 +43,6 @@ class ucp_pmsearch_module
 					$template->assign_vars(array(
 						'S_KEYWORDS'	=>	$keywords
 					));
-				
 
 					$this->search = null;
 					$error = false;
@@ -72,13 +71,12 @@ class ucp_pmsearch_module
 							'TOTAL_MESSAGES'	=> $search_count
 						));
 					}
-					
+
 					else
 					{
 						trigger_error('NO_RESULTS_FOUND');
 					}
 					// After we got the the search count we go deeper
-				
 				}
 			break;
 		}

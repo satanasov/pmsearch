@@ -16,11 +16,20 @@ namespace anavaro\pmsearch\search;
 /**
 * @ignore
 */
-defined('SEARCH_RESULT_NOT_IN_CACHE') or define('SEARCH_RESULT_NOT_IN_CACHE', 0);
+if (!defined('SEARCH_RESULT_NOT_IN_CACHE'))
+{
+	define('SEARCH_RESULT_NOT_IN_CACHE', 0);
+}
 
-defined('SEARCH_RESULT_IN_CACHE') or define('SEARCH_RESULT_IN_CACHE', 1);
+if (!defined('SEARCH_RESULT_IN_CACHE'))
+{
+	define('SEARCH_RESULT_IN_CACHE', 1);
+}
 
-defined('SEARCH_RESULT_INCOMPLETE') or define('SEARCH_RESULT_INCOMPLETE', 2);
+if (!defined('SEARCH_RESULT_INCOMPLETE')) 
+{
+	define('SEARCH_RESULT_INCOMPLETE', 2);
+}
 
 /**
 * phpBB's own db driven fulltext search, version 2
@@ -494,7 +503,7 @@ class fulltext_native
 	* @param	int			$per_page			number of ids each page is supposed to contain
 	* @return	boolean|int						total number of results
 	*/
-	public function keyword_search($fields, $terms, $sort_dir, $sort_days = 0, $author_ary, &$id_ary, &$start, $per_page)
+	public function keyword_search($fields, $terms, $sort_dir, $sort_days, $author_ary, &$id_ary, &$start, $per_page)
 	{
 		// No keywords? No posts.
 		if (empty($this->search_query))

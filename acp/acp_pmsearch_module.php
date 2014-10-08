@@ -161,17 +161,6 @@ class acp_pmsearch_module
 									}
 									//$this->var_display($this->state[2]);
 									$post_counter += $this->batch_size;
-									// save the current state
-									if ($post_counter <= $this->max_post_id)
-									{
-										$this->state[3] = 'continue';
-									}
-									else
-									{
-										$this->state = array('');
-										add_log('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
-									}
-									$this->save_state();
 
 									// pretend the number of posts was as big as the number of ids we indexed so far
 									// just an estimation as it includes deleted posts
@@ -185,8 +174,15 @@ class acp_pmsearch_module
 										$mtime = explode(' ', microtime());
 										$totaltime = $mtime[0] + $mtime[1] - $starttime;
 										$rows_per_second = $row_count / $totaltime;
+										$this->state[3] = 'continue';
+										$this->save_state();
 										meta_refresh(1, append_sid($this->u_action . '&amp;action_index=create&amp;skip_rows=' . $post_counter));
 										trigger_error($user->lang('SEARCH_INDEX_CREATE_REDIRECT', (int) $row_count, $post_counter) . $user->lang('SEARCH_INDEX_CREATE_REDIRECT_RATE', $rows_per_second));
+									}
+									else
+									{
+										$this->state = array('');
+										add_log('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
 									}
 								}
 							break;
