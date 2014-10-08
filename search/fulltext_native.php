@@ -26,7 +26,7 @@ if (!defined('SEARCH_RESULT_IN_CACHE'))
 	define('SEARCH_RESULT_IN_CACHE', 1);
 }
 
-if (!defined('SEARCH_RESULT_INCOMPLETE')) 
+if (!defined('SEARCH_RESULT_INCOMPLETE'))
 {
 	define('SEARCH_RESULT_INCOMPLETE', 2);
 }
