@@ -11,8 +11,8 @@ Features
     - Enable PM Indexing
     - GLobaly allow PM search
     - Individual user permissions to allow PM Search
-    - [TODO] Indexing statistics
-    - [TODO] Build/delete Indexing statistics
+    - Indexing statistics
+    - Build/delete Indexing statistics
   
   UCP
   
