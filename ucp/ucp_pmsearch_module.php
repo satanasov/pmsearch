@@ -95,7 +95,7 @@ class ucp_pmsearch_module
 							));
 							$count ++;
 						}
-						
+
 						$pagination = $phpbb_container->get('pagination');
 						$base_url = append_sid('ucp.php?i=' . $id . '&mode=' . $mode . '&keywords=' . $keywords . '&terms=' . $terms);
 						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 25, $startFrom);
