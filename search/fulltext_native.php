@@ -709,7 +709,8 @@ class fulltext_native
 		if (sizeof($author_ary))
 		{
 			$folders = array(-2, -1);
-			$sql_author = '((' . $this->db->sql_in_set('msg.author_id', $author_ary) . ' or ' . $this->db->sql_in_set('msg.user_id', $author_ary) . ') and (msg.user_id <> msg.author_id or (msg.user_id = msg.author_id and ' . $this->db->sql_in_set('msg.folder_id', $folders, true) . ')))';
+			//$sql_author = '((' . $this->db->sql_in_set('msg.author_id', $author_ary) . ' or ' . $this->db->sql_in_set('msg.user_id', $author_ary) . ') and (msg.user_id <> msg.author_id or (msg.user_id = msg.author_id and ' . $this->db->sql_in_set('msg.folder_id', $folders, true) . ')))';
+			$sql_author = '(' . $this->db->sql_in_set('msg.author_id', $author_ary) . ' or ' . $this->db->sql_in_set('msg.user_id', $author_ary) . ')';
 			$sql_where[] = $sql_author;
 		}
 
@@ -771,7 +772,6 @@ class fulltext_native
 		unset($sql_where, $sql_sort, $group_by);
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
-		var_dump($sql);
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))
@@ -822,238 +822,6 @@ class fulltext_native
 		$id_ary = array_slice($id_ary, 0, (int) $per_page);
 
 		return $total_results;
-	}
-
-	/**
-	* Performs a search on an author's posts without caring about message contents. Depends on display specific params
-	*
-	* @param	string		$type				contains either posts or topics depending on what should be searched for
-	* @param	boolean		$firstpost_only		if true, only topic starting posts will be considered
-	* @param	array		$sort_by_sql		contains SQL code for the ORDER BY part of a query
-	* @param	string		$sort_key			is the key of $sort_by_sql for the selected sorting
-	* @param	string		$sort_dir			is either a or d representing ASC and DESC
-	* @param	string		$sort_days			specifies the maximum amount of days a post may be old
-	* @param	array		$ex_fid_ary			specifies an array of forum ids which should not be searched
-	* @param	string		$post_visibility	specifies which types of posts the user can view in which forums
-	* @param	int			$topic_id			is set to 0 or a topic id, if it is not 0 then only posts in this topic should be searched
-	* @param	array		$author_ary			an array of author ids
-	* @param	string		$author_name		specifies the author match, when ANONYMOUS is also a search-match
-	* @param	array		&$id_ary			passed by reference, to be filled with ids for the page specified by $start and $per_page, should be ordered
-	* @param	int			$start				indicates the first index of the page
-	* @param	int			$per_page			number of ids each page is supposed to contain
-	* @return	boolean|int						total number of results
-	*/
-	public function author_search($type, $firstpost_only, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $post_visibility, $topic_id, $author_ary, $author_name, &$id_ary, &$start, $per_page)
-	{
-		// No author? No posts
-		if (!sizeof($author_ary))
-		{
-			return 0;
-		}
-
-		// generate a search_key from all the options to identify the results
-		$search_key = md5(implode('#', array(
-			'',
-			$type,
-			($firstpost_only) ? 'firstpost' : '',
-			'',
-			'',
-			$sort_days,
-			$sort_key,
-			$topic_id,
-			implode(',', $ex_fid_ary),
-			$post_visibility,
-			implode(',', $author_ary),
-			$author_name,
-		)));
-
-		// try reading the results from cache
-		$total_results = 0;
-		if ($this->obtain_ids($search_key, $total_results, $id_ary, $start, $per_page, $sort_dir) == SEARCH_RESULT_IN_CACHE)
-		{
-			return $total_results;
-		}
-
-		$id_ary = array();
-
-		// Create some display specific sql strings
-		if ($author_name)
-		{
-			// first one matches post of registered users, second one guests and deleted users
-			$sql_author = '(' . $this->db->sql_in_set('p.poster_id', array_diff($author_ary, array(ANONYMOUS)), false, true) . ' OR p.post_username ' . $author_name . ')';
-		}
-		else
-		{
-			$sql_author = $this->db->sql_in_set('p.poster_id', $author_ary);
-		}
-		$sql_fora		= (sizeof($ex_fid_ary)) ? ' AND ' . $this->db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '';
-		$sql_time		= ($sort_days) ? ' AND p.post_time >= ' . (time() - ($sort_days * 86400)) : '';
-		$sql_topic_id	= ($topic_id) ? ' AND p.topic_id = ' . (int) $topic_id : '';
-		$sql_firstpost = ($firstpost_only) ? ' AND p.post_id = t.topic_first_post_id' : '';
-		$post_visibility = ($post_visibility) ? ' AND ' . $post_visibility : '';
-
-		// Build sql strings for sorting
-		$sql_sort = $sort_by_sql[$sort_key] . (($sort_dir == 'a') ? ' ASC' : ' DESC');
-		$sql_sort_table = $sql_sort_join = '';
-		switch ($sql_sort[0])
-		{
-			case 'u':
-				$sql_sort_table	= USERS_TABLE . ' u, ';
-				$sql_sort_join	= ' AND u.user_id = p.poster_id ';
-			break;
-
-			case 't':
-				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? TOPICS_TABLE . ' t, ' : '';
-				$sql_sort_join	= ($type == 'posts' && !$firstpost_only) ? ' AND t.topic_id = p.topic_id ' : '';
-			break;
-
-			case 'f':
-				$sql_sort_table	= FORUMS_TABLE . ' f, ';
-				$sql_sort_join	= ' AND f.forum_id = p.forum_id ';
-			break;
-		}
-
-		$select = ($type == 'posts') ? 'p.post_id' : 't.topic_id';
-		$is_mysql = false;
-
-		// If the cache was completely empty count the results
-		if (!$total_results)
-		{
-			switch ($this->db->get_sql_layer())
-			{
-				case 'mysql4':
-				case 'mysqli':
-//					$select = 'SQL_CALC_FOUND_ROWS ' . $select;
-					$is_mysql = true;
-				break;
-
-				default:
-					if ($type == 'posts')
-					{
-						$sql = 'SELECT COUNT(p.post_id) as total_results
-							FROM ' . POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . TOPICS_TABLE . ' t ' : ' ') . "
-							WHERE $sql_author
-								$sql_topic_id
-								$sql_firstpost
-								$post_visibility
-								$sql_fora
-								$sql_time";
-					}
-					else
-					{
-						if ($this->db->get_sql_layer() == 'sqlite' || $this->db->get_sql_layer() == 'sqlite3')
-						{
-							$sql = 'SELECT COUNT(topic_id) as total_results
-								FROM (SELECT DISTINCT t.topic_id';
-						}
-						else
-						{
-							$sql = 'SELECT COUNT(DISTINCT t.topic_id) as total_results';
-						}
-
-						$sql .= ' FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
-							WHERE $sql_author
-								$sql_topic_id
-								$sql_firstpost
-								$post_visibility
-								$sql_fora
-								AND t.topic_id = p.topic_id
-								$sql_time" . (($this->db->get_sql_layer() == 'sqlite' || $this->db->get_sql_layer() == 'sqlite3') ? ')' : '');
-					}
-					$result = $this->db->sql_query($sql);
-
-					$total_results = (int) $this->db->sql_fetchfield('total_results');
-					$this->db->sql_freeresult($result);
-
-					if (!$total_results)
-					{
-						return false;
-					}
-				break;
-			}
-		}
-
-		// Build the query for really selecting the post_ids
-		if ($type == 'posts')
-		{
-			$sql = "SELECT $select
-				FROM " . $sql_sort_table . POSTS_TABLE . ' p' . (($firstpost_only) ? ', ' . TOPICS_TABLE . ' t' : '') . "
-				WHERE $sql_author
-					$sql_topic_id
-					$sql_firstpost
-					$post_visibility
-					$sql_fora
-					$sql_sort_join
-					$sql_time
-				ORDER BY $sql_sort";
-			$field = 'post_id';
-		}
-		else
-		{
-			$sql = "SELECT $select
-				FROM " . $sql_sort_table . TOPICS_TABLE . ' t, ' . POSTS_TABLE . " p
-				WHERE $sql_author
-					$sql_topic_id
-					$sql_firstpost
-					$post_visibility
-					$sql_fora
-					AND t.topic_id = p.topic_id
-					$sql_sort_join
-					$sql_time
-				GROUP BY t.topic_id, " . $sort_by_sql[$sort_key] . '
-				ORDER BY ' . $sql_sort;
-			$field = 'topic_id';
-		}
-
-		// Only read one block of posts from the db and then cache it
-		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$id_ary[] = (int) $row[$field];
-		}
-		$this->db->sql_freeresult($result);
-
-		if (!$total_results && $is_mysql)
-		{
-			// Count rows for the executed queries. Replace $select within $sql with SQL_CALC_FOUND_ROWS, and run it.
-			$sql_calc = str_replace('SELECT ' . $select, 'SELECT DISTINCT SQL_CALC_FOUND_ROWS p.post_id', $sql);
-
-			$this->db->sql_query($sql_calc);
-			$this->db->sql_freeresult($result);
-
-			$sql_count = 'SELECT FOUND_ROWS() as total_results';
-			$result = $this->db->sql_query($sql_count);
-			$total_results = (int) $this->db->sql_fetchfield('total_results');
-			$this->db->sql_freeresult($result);
-
-			if (!$total_results)
-			{
-				return false;
-			}
-		}
-
-		if ($start >= $total_results)
-		{
-			$start = floor(($total_results - 1) / $per_page) * $per_page;
-
-			$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
-
-			while ($row = $this->db->sql_fetchrow($result))
-			{
-				$id_ary[] = (int) $row[$field];
-			}
-			$this->db->sql_freeresult($result);
-		}
-
-		if (sizeof($id_ary))
-		{
-			$this->save_ids($search_key, '', $author_ary, $total_results, $id_ary, $start, $sort_dir);
-			$id_ary = array_slice($id_ary, 0, $per_page);
-
-			return $total_results;
-		}
-		return false;
 	}
 
 	/**
@@ -1393,9 +1161,9 @@ class fulltext_native
 				set_config('search_last_gc', time(), true);
 
 				// Delete the matches
-				$sql = 'DELETE FROM ' . PRIVMSGS_TABLE . '_swm' . '
-					WHERE ' . $this->db->sql_in_set('word_id', $sql_in);
-				$this->db->sql_query($sql);
+				//$sql = 'DELETE FROM ' . PRIVMSGS_TABLE . '_swm' . '
+				//	WHERE ' . $this->db->sql_in_set('word_id', $sql_in);
+				//$this->db->sql_query($sql);
 			}
 			unset($sql_in);
 		}

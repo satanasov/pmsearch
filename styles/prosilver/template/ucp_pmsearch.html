@@ -14,13 +14,54 @@
 		<input type="submit" name="submit" value="{L_SEARCH}" class="button1" />
 	</fieldset>
 </form>
-
-		<div class="pagination">
-				{TOTAL_MESSAGES}
-				<!-- IF .pagination -->
-					<!-- INCLUDE pagination.html -->
-				<!-- ELSE -->
-					 &bull; {PAGE_NUMBER}
-				<!-- ENDIF -->
+<div class="panel">
+	<div class="inner">
+		<div class="action-bar top">
+			<div class="pagination">
+					{TOTAL_MESSAGES}
+					<!-- IF .pagination -->
+						<!-- INCLUDE pagination.html -->
+					<!-- ELSE -->
+						 &bull; {PAGE_NUMBER}
+					<!-- ENDIF -->
+			</div>
 		</div>
+		
+		<ul class="topiclist two-columns">
+			<li class="header">
+				<dl>
+					<dt><div class="list-inner">{L_MESSAGE}</div></dt>
+				</dl>
+			</li>
+		</ul>
+		<ul class="topiclist cplist pmlist responsive-show-all <!-- IF S_SHOW_RECIPIENTS -->missing-column<!-- ELSE -->two-columns<!-- ENDIF -->">
+
+		<!-- BEGIN pm_results -->
+			<li class="row<!-- IF pm_results.S_ROW_COUNT is odd --> bg1<!-- ELSE --> bg2<!-- ENDIF --><!-- IF pm_results.PM_CLASS --> {pm_results.PM_CLASS}<!-- ENDIF -->">
+				<dl class="icon {pm_results.FOLDER_IMG_STYLE}">
+					<dt<!-- IF pm_results.PM_ICON_URL and S_PM_ICONS --> style="background-image: url({pm_results.PM_ICON_URL}); background-repeat: no-repeat;"<!-- ENDIF -->>
+						<!-- IF pm_results.S_PM_UNREAD and not pm_results.S_PM_DELETED --><a href="{pm_results.U_VIEW_PM}" class="icon-link"></a><!-- ENDIF -->
+						<div class="list-inner">
+							<a href="{pm_results.U_VIEW_PM}" class="topictitle">{pm_results.SUBJECT}</a><br />
+							{L_MESSAGE_BY_AUTHOR} {pm_results.MESSAGE_AUTHOR_FULL} &raquo; {pm_results.SENT_TIME}
+						</div>
+					</dt>
+				</dl>
+			</li>
+		<!-- END pm_results -->
+
+		</ul>
+		
+		<div class="action-bar top">
+			<div class="pagination">
+					{TOTAL_MESSAGES}
+					<!-- IF .pagination -->
+						<!-- INCLUDE pagination.html -->
+					<!-- ELSE -->
+						 &bull; {PAGE_NUMBER}
+					<!-- ENDIF -->
+			</div>
+		</div>
+	</div>
+</div>
 <!-- INCLUDE ucp_footer.html -->

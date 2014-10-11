@@ -59,15 +59,49 @@ class ucp_pmsearch_module
 					$user_id = array(
 						'' => $user->data['user_id']
 					);
-					$search_count = $this->search->keyword_search('all', 'all', 'a', 0, $user_id, $id_ary, $startFrom, 50);
+					$search_count = $this->search->keyword_search('all', 'all', 'a', 0, $user_id, $id_ary, $startFrom, 25);
 					if ($search_count > 0)
 					{
+						// Let's get additional info
+						$page_array = array();
+						$sql_array = array(
+							'SELECT'	=> 'msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_text as msg_text, msg.message_time as msg_time, msg.author_id as msg_author, u.username as msg_author_uname, u.user_colour as msg_author_colour',
+							'FROM'	=> array(
+								PRIVMSGS_TABLE	=> 'msg',
+								USERS_TABLE	=> 'u'
+							),
+							'WHERE'	=> 'u.user_id = msg.author_id and ' . $db->sql_in_set('msg.msg_id', $id_ary)
+						);
+						$sql = $db->sql_build_query('SELECT', $sql_array);
+						$result = $db->sql_query($sql);
+						// Let's populate template
+						$count = 1;
+						while ($row = $db->sql_fetchrow($result))
+						{
+						/*	$page_array[$row['msg_id']] = array(
+								'msg_id'	=> $row['msg_id'],
+								'msg_subject'	=>	$row['msg_subject'],
+								'msg_author'	=>	$row['msg_author'],
+								'msg_time'	=>	$user->format_date($row['msg_time']),
+								'msg_author_uname'	=> $row['msg_author_uname'],
+								'msg_author_colour'	=> $row['msg_author_colour']
+							);*/
+							$template->assign_block_vars('pm_results', array(
+								'S_ROW_COUNT'	=> $count,
+								'U_VIEW_PM'	=> './ucp.php?i=pm&mode=view&p=' . $row['msg_id'],
+								'SUBJECT'	=> $row['msg_subject'],
+								'SENT_TIME'	=>	$user->format_date($row['msg_time']),
+								'MESSAGE_AUTHOR_FULL'	=> ($row['msg_author_colour'] ? '<a href="./memberlist.php?mode=viewprofile&u=' . $row['msg_author'] . ' class="username-coloured" style="color: #' . $row['msg_author_colour'] . ';">' . $row['msg_author_uname'] . '</a>' : '<a href="./memberlist.php?mode=viewprofile&u=' . $row['msg_author'] . ' class="username">' . $row['msg_author_uname'] . '</a>'),
+							));
+							$count ++;
+						}
+						
 						$pagination = $phpbb_container->get('pagination');
 						$base_url = append_sid('ucp.php?i=' . $id . '&mode=' . $mode . '&keywords=' . $keywords . '&terms=' . $terms);
-						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 50, $startFrom);
-						$pageNumber = $pagination->get_on_page(50, $startFrom);
+						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 25, $startFrom);
+						$pageNumber = $pagination->get_on_page(25, $startFrom);
 						$template->assign_vars(array(
-							'PAGE_NUMBER'	=> $pagination->on_page($total_paginated, $this->config['news_number'], $start),
+							'PAGE_NUMBER'	=> $pagination->on_page($search_count, 25, $startFrom),
 							'TOTAL_MESSAGES'	=> $search_count
 						));
 					}
