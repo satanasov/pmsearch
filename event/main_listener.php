@@ -82,8 +82,7 @@ class main_listener implements EventSubscriberInterface
 			$delete_rows[$row['msg_id']] = 1;
 		}
 		$this->db->sql_freeresult($result);
-		
-		
+
 		if (!sizeof($delete_rows))
 		{
 			return false;
@@ -95,7 +94,6 @@ class main_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			
 			$sql = 'SELECT COUNT(msg_id) as count, msg_id
 				FROM ' . PRIVMSGS_TO_TABLE . '
 				WHERE ' . $this->db->sql_in_set('msg_id', array_keys($delete_rows));
