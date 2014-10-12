@@ -24,4 +24,14 @@ class pmsearch_base extends \phpbb_functional_test_case
 	{
 		parent::setUp();
 	}
+	
+	public function get_user_id($username)
+	{
+		$sql = 'SELECT user_id, username 
+				FROM ' . USERS_TABLE . '
+				WHERE username_clean = \''.$this->db->sql_escape(utf8_clean_string($username)).'\'';
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		return $row['user_id'];
+	}
 }
