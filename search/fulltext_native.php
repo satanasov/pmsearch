@@ -1186,9 +1186,9 @@ class fulltext_native
 		{
 			case 'sqlite':
 			case 'sqlite3':
-				$this->db->sql_query('DELETE FROM ' . PRIVMSGS_TABLE . '_swl;');
-				$this->db->sql_query('DELETE FROM ' . PRIVMSGS_TABLE . '_swm;');
-				$this->db->sql_query('DELETE FROM ' . SEARCH_RESULTS_TABLE . ';');
+				$this->db->sql_query('DELETE FROM ' . PRIVMSGS_TABLE . '_swl WHERE word_id > 0');
+				$this->db->sql_query('DELETE FROM ' . PRIVMSGS_TABLE . '_swm WHERE word_id > 0');
+				//$this->db->sql_query('DELETE FROM ' . SEARCH_RESULTS_TABLE . '');
 			break;
 
 			default:
