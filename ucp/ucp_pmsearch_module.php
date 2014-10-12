@@ -64,16 +64,13 @@ class ucp_pmsearch_module
 					{
 						// Let's get additional info
 						$page_array = array();
-						$sql_array = array(
-							'SELECT'	=> 'msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_text as msg_text, msg.message_time as msg_time, msg.author_id as msg_author, u.username as msg_author_uname, u.user_colour as msg_author_colour',
-							'FROM'	=> array(
-								PRIVMSGS_TABLE	=> 'msg',
-								USERS_TABLE	=> 'u'
-							),
-							'WHERE'	=> 'u.user_id = msg.author_id and ' . $db->sql_in_set('msg.msg_id', $id_ary)
-						);
-						$sql = $db->sql_build_query('SELECT', $sql_array);
-						$result = $db->sql_query($sql);
+						$sql_array = 'SELECT msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_text as msg_text, msg.message_time as msg_time, msg.author_id as msg_author, u.username as msg_author_uname, u.user_colour as msg_author_colour, tmsg.pm_unread as unread, tmsg.pm_replied as replied
+								FROM ' . PRIVMSGS_TABLE . ' as msg, ' . USERS_TABLE . ' as u, ' . PRIVMSGS_TO_TABLE . ' as tmsg
+								WHERE u.user_id = msg.author_id and (msg.msg_id = tmsg.msg_id and msg.author_id = tmsg.author_id) and ' . $db->sql_in_set('msg.msg_id', $id_ary) . '
+								GROUP BY msg.msg_id
+								ORDER BY msg.msg_id DESC';
+						//$sql = $db->sql_build_query('SELECT', $sql_array);
+						$result = $db->sql_query($sql_array);
 						// Let's populate template
 						$count = 1;
 						while ($row = $db->sql_fetchrow($result))
@@ -88,10 +85,12 @@ class ucp_pmsearch_module
 							);*/
 							$template->assign_block_vars('pm_results', array(
 								'S_ROW_COUNT'	=> $count,
+								'FOLDER_IMG_STYLE'	=> ($row['unread'] ? 'pm_unread' : 'pm_read'),
+								'PM_CLASS'	=> ($row['replied'] ? 'pm_replied_colour' : ''),
 								'U_VIEW_PM'	=> './ucp.php?i=pm&mode=view&p=' . $row['msg_id'],
 								'SUBJECT'	=> $row['msg_subject'],
 								'SENT_TIME'	=>	$user->format_date($row['msg_time']),
-								'MESSAGE_AUTHOR_FULL'	=> ($row['msg_author_colour'] ? '<a href="./memberlist.php?mode=viewprofile&u=' . $row['msg_author'] . ' class="username-coloured" style="color: #' . $row['msg_author_colour'] . ';">' . $row['msg_author_uname'] . '</a>' : '<a href="./memberlist.php?mode=viewprofile&u=' . $row['msg_author'] . ' class="username">' . $row['msg_author_uname'] . '</a>'),
+								'MESSAGE_AUTHOR_FULL'	=> ($row['msg_author_colour'] ? '<a href="./memberlist.php?mode=viewprofile&u=' . $row['msg_author'] . '" class="username-coloured" style="color: #' . $row['msg_author_colour'] . ';">' . $row['msg_author_uname'] . '</a>' : '<a href="./memberlist.php?mode=viewprofile&u=' . $row['msg_author'] . '" class="username">' . $row['msg_author_uname'] . '</a>'),
 							));
 							$count ++;
 						}
@@ -102,7 +101,8 @@ class ucp_pmsearch_module
 						$pageNumber = $pagination->get_on_page(25, $startFrom);
 						$template->assign_vars(array(
 							'PAGE_NUMBER'	=> $pagination->on_page($search_count, 25, $startFrom),
-							'TOTAL_MESSAGES'	=> $search_count
+							'TOTAL_MESSAGES'	=> $search_count,
+							'HAS_RESULTS'	=> 1,
 						));
 					}
 

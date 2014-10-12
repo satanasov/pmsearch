@@ -742,13 +742,13 @@ class fulltext_native
 				case 'sqlite3':
 					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
 					$sql = 'SELECT COUNT(msg_id) as total_results
-							FROM (' . $this->db->sql_build_query('SELECT', $sql_array_count) . ')';
+							FROM (' . $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) . ')';
 
 				// no break
 
 				default:
 					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
-					$sql = (!$sql) ? $this->db->sql_build_query('SELECT', $sql_array_count) : $sql;
+					$sql = (!$sql) ? $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) : $sql;
 
 					$result = $this->db->sql_query($sql);
 					$total_results = (int) $this->db->sql_fetchfield('total_results');
@@ -771,7 +771,7 @@ class fulltext_native
 
 		unset($sql_where, $sql_sort, $group_by);
 
-		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		$sql = $this->db->sql_build_query('SELECT_DISTINCT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))
@@ -787,7 +787,7 @@ class fulltext_native
 			$sql_array_copy = $sql_array;
 			$sql_array_copy['SELECT'] = 'SQL_CALC_FOUND_ROWS msg.msg_id ';
 
-			$sql_calc = $this->db->sql_build_query('SELECT', $sql_array_copy);
+			$sql_calc = $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_copy);
 			unset($sql_array_copy);
 			$this->db->sql_query($sql_calc);
 			$this->db->sql_freeresult($result);

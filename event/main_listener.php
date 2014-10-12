@@ -65,9 +65,56 @@ class main_listener implements EventSubscriberInterface
 		}
 	}
 
-	//Let's delete indexes ot deleted PM's
+	//Let's delete indexes of deleted PM's
 	public function pm_delete_index($event)
 	{
-		$this->fulltext_search->index_remove($event['msg_ids']);
+		// Get PM Information for later deleting
+		$sql = 'SELECT msg_id, pm_unread, pm_new
+			FROM ' . PRIVMSGS_TO_TABLE . '
+			WHERE ' . $this->db->sql_in_set('msg_id', array_map('intval', $event['msg_ids'])) . '
+				AND folder_id = ' . $event['folder_id'] . '
+				AND user_id = ' . $event['user_id'];
+		$result = $this->db->sql_query($sql);
+
+		$delete_rows = array();
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$delete_rows[$row['msg_id']] = 1;
+		}
+		$this->db->sql_freeresult($result);
+		
+		
+		if (!sizeof($delete_rows))
+		{
+			return false;
+		}
+		// If no one has read it (the delete_pm function will delete all data
+		if ($event['folder_id'] == PRIVMSGS_OUTBOX)
+		{
+			$this->fulltext_search->index_remove($event['msg_ids']);
+		}
+		else
+		{
+			
+			$sql = 'SELECT COUNT(msg_id) as count, msg_id
+				FROM ' . PRIVMSGS_TO_TABLE . '
+				WHERE ' . $this->db->sql_in_set('msg_id', array_keys($delete_rows));
+			$result = $this->db->sql_query($sql);
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				if ($row['count'] == 2)
+				{
+					unset($delete_rows[$row['msg_id']]);
+				}
+			}
+			$this->db->sql_freeresult($result);
+
+			$delete_ids = array_keys($delete_rows);
+			var_dump($delete_ids);
+			if (sizeof($delete_ids))
+			{
+				$this->fulltext_search->index_remove($delete_ids);
+			}
+		}
 	}
 }
