@@ -38,9 +38,9 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PMSEARCH_TITLE'	=> 'Търсене в личните съощения',
-	'PMSEARCH_KEYWORDS_EXPLAIN'	=>	'Сложете + пред думата която трябва да е съдържа и - пред думата която не трябва. Сложете лист от думи разделение с | в скоби ако само една от тези думи трябва се намери. Използвай * за wildcard за частични съвпадения.',
-	'SEARCH_ALL_TERMS'	=>	'Търси за всички въведени термини',
-	'SEARCH_ANY_TERMS'	=>	'Търси за всеки от въведените термини',
-	'NO_RESULTS_FOUND'	=> 'Няма намерени резулстати',
+	'PMSEARCH_TITLE'	=> 'Search in PMs',
+	'PMSEARCH_KEYWORDS_EXPLAIN'	=>	'Place + in front of a word which must be found and - in front of a word which must not be found. Put a list of words separated by | into brackets if only one of the words must be found. Use * as a wildcard for partial matches.',
+	'SEARCH_ALL_TERMS'	=>	' Search for all terms or use query as entered',
+	'SEARCH_ANY_TERMS'	=>	'Search for any terms',
+	'NO_RESULTS_FOUND'	=> 'No results found',
 ));

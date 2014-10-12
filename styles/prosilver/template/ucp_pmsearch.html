@@ -41,7 +41,7 @@
 			<li class="row<!-- IF pm_results.S_ROW_COUNT is odd --> bg1<!-- ELSE --> bg2<!-- ENDIF --><!-- IF pm_results.PM_CLASS --> {pm_results.PM_CLASS}<!-- ENDIF -->">
 				<dl class="icon {pm_results.FOLDER_IMG_STYLE}">
 					<dt<!-- IF pm_results.PM_ICON_URL and S_PM_ICONS --> style="background-image: url({pm_results.PM_ICON_URL}); background-repeat: no-repeat;"<!-- ENDIF -->>
-						<!-- IF pm_results.S_PM_UNREAD and not pm_results.S_PM_DELETED --><a href="{pm_results.U_VIEW_PM}" class="icon-link"></a><!-- ENDIF -->
+						<!-- IF pm_results.S_PM_UNREAD --><a href="{pm_results.U_VIEW_PM}" class="icon-link"></a><!-- ENDIF -->
 						<div class="list-inner">
 							<a href="{pm_results.U_VIEW_PM}" class="topictitle">{pm_results.SUBJECT}</a><br />
 							{L_MESSAGE_BY_AUTHOR} {pm_results.MESSAGE_AUTHOR_FULL} &raquo; {pm_results.SENT_TIME}

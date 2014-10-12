@@ -62,9 +62,9 @@ $lang = array_merge($lang, array(
 	'TOTAL_WORDS'							=> 'Общо индексирани думи',
 	'TOTAL_MATCHES'							=> 'Общ сбор връзки между думи и PMs.',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
-		2	=> 'All posts up to post id %2$d have now been indexed, of which %1$d posts were within this step.<br />',
+		2	=> 'Всички постове до пост %2$d бяха индексирани, от тях %1$d поста в тази стъпка.<br />',
 	),
 	'SEARCH_INDEX_CREATE_REDIRECT_RATE'		=> array(
-		2	=> 'The current rate of indexing is approximately %1$.1f posts per second.<br />Indexing in progress…',
+		2	=> 'Текущата скорост е %1$.1f поста в секунда.<br />Продължаваме индексацията …',
 	),
 ));

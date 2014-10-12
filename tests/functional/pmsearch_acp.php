@@ -31,5 +31,6 @@ class pmsearch_acp extends pmsearch_base
 		
 		$this->logout();
 	}
+	
 }
 ?>

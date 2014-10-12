@@ -40,27 +40,27 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	// ACP general langauge
 	'ACP_PMSEARCH_GRP'	=> 'Search in PMs',
-	'ACP_PRVOPT'	=> 'Options',
+	'ACP_PRVOPT'	=> 'Settings',
 
 	//ACP PM Admin Settings page
 	'PMSEARCH_ADMIN'	=> 'Search in PMs',
-	'PMSEARCH_ADMIN_EXPLAIN'	=> 'From here you can set up some options of user PM Search',
-	'PMSEARCH_SETTINGS'	=> 'Settings',
-	'PMSEARCH_PM_INDEX'	=> 'Indexing of PMs',
-	'PMSEARCH_PM_INDEX_EXPLAIN'	=> 'From here you enable the PM indexing<br /><b>(WARNING! Without indexing the PM Search will not work)</b>',
-	'PMSEARCH_PM_SEARCH'	=>	'Enable Search',
-	'PMSEARCH_PM_SEARCH_EXPLAIN'	=> 'Globaly enable (or disable) searching in PMs',
+	'PMSEARCH_ADMIN_EXPLAIN'	=> 'From here you can set some of options related to user search in PMs',
+	'PMSEARCH_SETTINGS'	=> 'Options',
+	'PMSEARCH_PM_INDEX'	=> 'PM Indexing',
+	'PMSEARCH_PM_INDEX_EXPLAIN'	=> 'From here you can allow indexing<br /><b>(Warning! Search will not work if you have no indexing)</b>',
+	'PMSEARCH_PM_SEARCH'	=>	'Allow search',
+	'PMSEARCH_PM_SEARCH_EXPLAIN'	=> 'Globally allow (or deny) search in PMs',
 	'DELETE_INDEX'	=> 'Delete indexes',
 	'CREATE_INDEX'	=> 'Create indexes',
 
 	//ACP ACL
-	'ACL_U_PMSEARCH'	=> 'User can search in his PMs',
+	'ACL_U_PMSEARCH'	=> 'User can search in PMs',
 
 	//Other ACP
-	'LOG_PMSEARCH_INDEX_REMOVED'	=> '<strong>Removed search index for</strong><br />» %s',
-	'LOG_PMSEARCH_INDEX_CREATED'	=> '<strong>Created search index for</strong><br />» %s',
-	'TOTAL_WORDS'							=> 'Total number of indexed words',
-	'TOTAL_MATCHES'							=> 'Total number of word to post relations indexed',
+	'LOG_PMSEARCH_INDEX_REMOVED'	=> '<strong>Removed search index for </strong><br />» %s',
+	'LOG_PMSEARCH_INDEX_CREATED'	=> '<strong>Created search index for </strong><br />» %s',
+	'TOTAL_WORDS'							=> 'Total indexed words',
+	'TOTAL_MATCHES'							=> 'Total count of word relations',
 	'SEARCH_INDEX_CREATE_REDIRECT'			=> array(
 		2	=> 'All posts up to post id %2$d have now been indexed, of which %1$d posts were within this step.<br />',
 	),
