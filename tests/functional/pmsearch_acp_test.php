@@ -40,7 +40,8 @@ class pmsearch_acp extends pmsearch_base
 		$this->add_lang_ext('anavaro/pmsearch', 'info_acp_pmsearch');
 		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
 		
-		$this->assertContains(3, $crawler->text());
+		$this->assertContains('12', $crawler->filter('indexed_words')->text());
+		$this->assertContains('12', $crawler->filter('relative_indexes')->text());
 	}
 }
 ?>
