@@ -133,13 +133,10 @@ class acp_pmsearch_module
 
 								while (still_on_time() && $post_counter <= $this->max_post_id)
 								{
-									/*$sql = 'SELECT msg_id, message_subject, message_text, author_id
-										FROM ' . PRIVMSGS_TABLE . '
-										WHERE msg_id >= ' . (int) ($post_counter + 1) . '
-											AND msg_id <= ' . (int) ($post_counter + $this->batch_size);*/
 									$sql = 'SELECT msg_id, message_subject, message_text, author_id
 										FROM ' . PRIVMSGS_TABLE . '
-										WHERE msg_id = 1765396';
+										WHERE msg_id >= ' . (int) ($post_counter + 1) . '
+											AND msg_id <= ' . (int) ($post_counter + $this->batch_size);
 									$result = $db->sql_query($sql);
 
 									$buffer = $db->sql_buffer_nested_transactions();
