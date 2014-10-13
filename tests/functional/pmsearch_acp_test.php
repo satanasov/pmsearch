@@ -100,7 +100,7 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$crawler = self::submit($form);
 		
-		$this->assertContains('5', $crawler->text());
+		$this->assertContains('5', $crawler->filter('.pagination')->text());
 	
 		$this->logout();
 	}
