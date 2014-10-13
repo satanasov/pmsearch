@@ -98,7 +98,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$form['keywords'] = 'Test';
 		
 		
-		//$crawler = self::submit($form);
+		$crawler = self::submit($form);
 		
 		//$this->assertContains('5', $crawler->filter('.pagination')->text());
 		
