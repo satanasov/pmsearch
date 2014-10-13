@@ -78,5 +78,30 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$this->logout();
 	}
+	public function test_search()
+	{
+		$this->login();
+		$message_id = $this->create_private_message('Test PM', 'This test PM will not contain words that stand for pm, so we can search for them.', array($this->get_user_id('testuser1')));
+		$message_id = $this->create_private_message('Test PM 1', 'This test PM will not contain words that stand for pm, so we can search for them. And it is the second pm', array($this->get_user_id('testuser1')));
+		$message_id = $this->create_private_message('Test PM 3', 'This test PM will not contain words that stand for pm, so we can search for them. And it is the third pm', array($this->get_user_id('testuser1')));
+		$message_id = $this->create_private_message('Test PM 4', 'This test PM will not contain words that stand for pm, so we can search for them. And it is the fourth pm', array($this->get_user_id('testuser1')));
+		
+		$this->logout();
+		
+		//get user to log in
+		$this->login('testuser1');
+		
+		$this->add_lang_ext('anavaro/pmsearch', 'info_ucp_pmsearch');
+		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
+		
+		$form = $crawler->selectButton($this->lang('SEARCH'))->form();
+		$form['keywords'] = 'test';
+		
+		$crawler = self::submit($form);
+		
+		$this->assertContains('6', $crawler->filter('.pagination')->text());
+	
+		$this->logout();
+	}
 }
 ?>
