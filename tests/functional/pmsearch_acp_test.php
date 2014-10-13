@@ -40,7 +40,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->add_lang_ext('anavaro/pmsearch', 'info_acp_pmsearch');
 		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
 		
-		$this->assertContains('14', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('11', $crawler->filter('#indexed_words')->text());
 		$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
 		
 		$this->logout();
@@ -73,7 +73,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::submit($form);
 		
 		//test step 3 begins
-		$this->assertContains('14', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('11', $crawler->filter('#indexed_words')->text());
 		$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
 		
 		$this->logout();
