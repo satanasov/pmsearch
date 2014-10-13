@@ -750,8 +750,8 @@ class fulltext_native
 					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
 					$sql = (!$sql) ? $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) : $sql;
 
-					$result = $this->db->sql_query($sql);
-					var_dump($result);
+					//$result = $this->db->sql_query($sql);
+					$result = 1;
 					$total_results = (int) $this->db->sql_fetchfield('total_results');
 					$this->db->sql_freeresult($result);
 
