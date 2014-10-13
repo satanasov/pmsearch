@@ -24,6 +24,8 @@ matrix:
       env: DB=mysqli
   allow_failures:
     - php: hhvm
+    - php: 5.4
+      env: DB=sqlite3
   fast_finish: true
 
 env:
