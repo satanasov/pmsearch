@@ -43,5 +43,5 @@ $lang = array_merge($lang, array(
 	'SEARCH_ALL_TERMS'	=>	'Търси за всички въведени термини',
 	'SEARCH_ANY_TERMS'	=>	'Търси за всеки от въведените термини',
 	'NO_RESULTS_FOUND'	=> 'Няма намерени резултати',
-	'SEARCH_PMS'	=> 'Търси',
+	'SEARCH_PMS'	=> 'Търси в личните съощения',
 ));
