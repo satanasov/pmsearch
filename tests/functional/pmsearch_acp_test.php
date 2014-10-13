@@ -95,11 +95,12 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
 		
 		$form = $crawler->selectButton($this->lang('SEARCH'))->form();
-		$form['keywords'] = 'test';
+		$form['keywords'] = 'Test';
+		
 		
 		$crawler = self::submit($form);
 		
-		$this->assertContains('6', $crawler->filter('.pagination')->text());
+		$this->assertContains('lalalalalala', $crawler->text());
 	
 		$this->logout();
 	}
