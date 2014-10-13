@@ -34,14 +34,14 @@ class pmsearch_acp_test extends pmsearch_base
 	public function test_event_auto_index()
 	{
 		$this->login();
-		$message_id = $this->create_private_message('Test private message #1', 'This is a test private message sent by the testing framework. We need to check event indexing.', array($this->get_user_id('testuser1')));
+		$message_id = $this->create_private_message('Test private message', 'This test private message sent testing framework. need check event indexing.', array($this->get_user_id('testuser1')));
 		
 		$this->admin_login();
 		$this->add_lang_ext('anavaro/pmsearch', 'info_acp_pmsearch');
 		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
 		
-		$this->assertContains('12', $crawler->filter('#indexed_words')->text());
-		$this->assertContains('12', $crawler->filter('#relative_indexes')->text());
+		$this->assertContains('14', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
 		
 		$this->logout();
 	}
@@ -73,8 +73,8 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::submit($form);
 		
 		//test step 3 begins
-		$this->assertContains('12', $crawler->filter('#indexed_words')->text());
-		$this->assertContains('12', $crawler->filter('#relative_indexes')->text());
+		$this->assertContains('14', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
 		
 		$this->logout();
 	}
