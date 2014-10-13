@@ -43,4 +43,5 @@ $lang = array_merge($lang, array(
 	'SEARCH_ALL_TERMS'	=>	' Search for all terms or use query as entered',
 	'SEARCH_ANY_TERMS'	=>	'Search for any terms',
 	'NO_RESULTS_FOUND'	=> 'No results found',
+	'SEARCH_PMS'	=> 'Search',
 ));

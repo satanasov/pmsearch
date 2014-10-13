@@ -94,7 +94,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->add_lang_ext('anavaro/pmsearch', 'info_ucp_pmsearch');
 		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
-		$form = $crawler->selectButton($this->lang('SEARCH'))->form();
+		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
 		$form['keywords'] = 'Test';
 		
 		
