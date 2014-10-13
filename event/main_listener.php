@@ -61,7 +61,8 @@ class main_listener implements EventSubscriberInterface
 		if ($this->config['pmsearch_pm_index'])
 		{
 			$data = $event['data'];
-			$this->fulltext_search->index($event['mode'], (int) $data['msg_id'], $data['message'], $event['subject'], (int) $data['from_user_id']);
+			$subject = $event['subject'];
+			$this->fulltext_search->index($event['mode'], (int) $data['msg_id'], $data['message'], $subject, (int) $data['from_user_id']);
 		}
 	}
 

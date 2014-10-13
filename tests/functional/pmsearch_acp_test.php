@@ -73,8 +73,8 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::submit($form);
 		
 		//test step 3 begins
-		$this->assertContains('12', $crawler->filter('#indexed_words')->text());
-		$this->assertContains('12', $crawler->filter('#relative_indexes')->text());
+		$this->assertContains('15', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('15', $crawler->filter('#relative_indexes')->text());
 		
 		$this->logout();
 	}
