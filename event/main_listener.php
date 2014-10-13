@@ -62,6 +62,7 @@ class main_listener implements EventSubscriberInterface
 		{
 			$data = $event['data'];
 			$subject = $event['subject'];
+			var_dump($event['subject']);
 			$this->fulltext_search->index($event['mode'], (int) $data['msg_id'], $data['message'], $subject, (int) $data['from_user_id']);
 		}
 	}
