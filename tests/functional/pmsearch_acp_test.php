@@ -92,7 +92,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->login('testuser1');
 		
 		$this->add_lang_ext('anavaro/pmsearch', 'info_ucp_pmsearch');
-		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
+		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
 		$form = $crawler->selectButton($this->lang('SEARCH'))->form();
 		$form['keywords'] = 'Test';
@@ -100,7 +100,7 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$crawler = self::submit($form);
 		
-		$this->assertContains('lalalalalala', $crawler->text());
+		$this->assertContains('5', $crawler->text());
 	
 		$this->logout();
 	}
