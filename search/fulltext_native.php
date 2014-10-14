@@ -747,10 +747,12 @@ class fulltext_native
 				// no break
 
 				default:
-					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
+					$sql_array_count['SELECT'] = 'COUNT (DISTINCT msg.msg_id) AS total_results';
 					$sql = (!$sql) ? $this->db->sql_build_query('SELECT', $sql_array_count) : $sql;
 
-					$result = $this->db->sql_query($sql);
+					//$result = $this->db->sql_query($sql);
+					$result = 1;
+					var_dump($sql);
 					$total_results = (int) $this->db->sql_fetchfield('total_results');
 					$this->db->sql_freeresult($result);
 
