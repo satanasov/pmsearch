@@ -749,8 +749,7 @@ class fulltext_native
 				default:
 					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
 					$sql = (!$sql) ? $this->db->sql_build_query('SELECT', $sql_array_count) : $sql;
-var_dump($sql);
-$result = 1;
+
 					//$result = $this->db->sql_query($sql);
 					$total_results = (int) $this->db->sql_fetchfield('total_results');
 					$this->db->sql_freeresult($result);
@@ -773,7 +772,7 @@ $result = 1;
 		unset($sql_where, $sql_sort, $group_by);
 
 		$sql = $this->db->sql_build_query('SELECT_DISTINCT', $sql_array);
-var_dump($sql);
+
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))

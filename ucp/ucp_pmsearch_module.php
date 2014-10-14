@@ -57,7 +57,7 @@ class ucp_pmsearch_module
 					$id_ary = array();
 
 					$user_id = array(
-						'' => $user->data['user_id']
+						'' => (int) $user->data['user_id']
 					);
 					$search_count = $this->search->keyword_search('all', 'all', 'a', 0, $user_id, $id_ary, $startFrom, 25);
 					if ($search_count > 0)
