@@ -742,13 +742,13 @@ class fulltext_native
 				case 'sqlite3':
 					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
 					$sql = 'SELECT COUNT(msg_id) as total_results
-							FROM (' . $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) . ')';
+							FROM (' . $this->db->sql_build_query('SELECT', $sql_array_count) . ')';
 
 				// no break
 
 				default:
-					$sql_array_count['SELECT'] = 'COUNT(DISTINCT(msg.msg_id)) AS total_results';
-					$sql = (!$sql) ? $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) : $sql;
+					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
+					$sql = (!$sql) ? $this->db->sql_build_query('SELECT', $sql_array_count) : $sql;
 
 					$result = $this->db->sql_query($sql);
 					
@@ -761,7 +761,7 @@ class fulltext_native
 					}
 				break;
 			}
-//var_dump($sql_array_count);
+
 			unset($sql_array_count, $sql);
 		}
 
