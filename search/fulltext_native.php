@@ -773,7 +773,7 @@ $result = 1;
 		unset($sql_where, $sql_sort, $group_by);
 
 		$sql = $this->db->sql_build_query('SELECT_DISTINCT', $sql_array);
-
+var_dump($sql);
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))
