@@ -543,10 +543,10 @@ class fulltext_native
 
 		// try reading the results from cache
 		$total_results = 0;
-		if ($this->obtain_ids($search_key, $total_results, $id_ary, $start, $per_page, $sort_dir) == SEARCH_RESULT_IN_CACHE)
+		/*if ($this->obtain_ids($search_key, $total_results, $id_ary, $start, $per_page, $sort_dir) == SEARCH_RESULT_IN_CACHE)
 		{
 			return $total_results;
-		}
+		}*/
 
 		$id_ary = array();
 
@@ -747,11 +747,11 @@ class fulltext_native
 				// no break
 
 				default:
-					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
+					$sql_array_count['SELECT'] = 'COUNT(DISTINCT(msg.msg_id)) AS total_results';
 					$sql = (!$sql) ? $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) : $sql;
-var_dump($sql);
+
 					$result = $this->db->sql_query($sql);
-					//$result = 1;
+					
 					$total_results = (int) $this->db->sql_fetchfield('total_results');
 					$this->db->sql_freeresult($result);
 
@@ -761,7 +761,7 @@ var_dump($sql);
 					}
 				break;
 			}
-
+//var_dump($sql_array_count);
 			unset($sql_array_count, $sql);
 		}
 
@@ -773,6 +773,7 @@ var_dump($sql);
 		unset($sql_where, $sql_sort, $group_by);
 
 		$sql = $this->db->sql_build_query('SELECT_DISTINCT', $sql_array);
+
 		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
 
 		while ($row = $this->db->sql_fetchrow($result))
