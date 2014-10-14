@@ -105,7 +105,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
 		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
-		$form['keywords'] = 'private message';
+		$form['keywords'] = 'private';
 		
 		$this->assertContains('1', $crawler->filter('.pagination')->text());
 		//$this->assertContains('alalaalalalalala', $crawler->text());
