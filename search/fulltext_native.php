@@ -740,7 +740,7 @@ class fulltext_native
 
 				case 'sqlite':
 				case 'sqlite3':
-					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
+					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id as msg_id';
 					$sql = 'SELECT COUNT(msg_id) as total_results
 							FROM (' . $this->db->sql_build_query('SELECT', $sql_array_count) . ')';
 
@@ -753,6 +753,12 @@ class fulltext_native
 					//$result = $this->db->sql_query($sql);
 					$result = 1;
 					var_dump($sql);
+					$sql_test = 'SELECT DISTINCT msg.msg_id FROM phpbb_privmsgs_swm m0 LEFT JOIN phpbb_privmsgs_to msg ON (m0.post_id = msg.msg_id) WHERE m0.word_id = 13 AND (msg.author_id = 48 or msg.user_id = 48)';
+					$result = $this->db->sql_query($sql_test);
+					while ($row = $this->db->sql_fetchrow($result))
+					{
+						var_dump($row);
+					}
 					$total_results = (int) $this->db->sql_fetchfield('total_results');
 					$this->db->sql_freeresult($result);
 
