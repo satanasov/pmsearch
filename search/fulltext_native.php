@@ -740,7 +740,6 @@ class fulltext_native
 
 				case 'sqlite':
 				case 'sqlite3':
-				case 'postgres':
 					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
 					$sql = 'SELECT COUNT(msg_id) as total_results
 							FROM (' . $this->db->sql_build_query('SELECT', $sql_array_count) . ')';
@@ -756,7 +755,7 @@ class fulltext_native
 					{
 						$total_results ++;
 					}
-					$total_results = (!$total_results) : (int) $this->db->sql_fetchfield('total_results') : $total_results;
+					$total_results = (!$total_results) ? (int) $this->db->sql_fetchfield('total_results') : $total_results;
 					$this->db->sql_freeresult($result);
 
 					if (!$total_results)
