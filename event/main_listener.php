@@ -109,7 +109,6 @@ class main_listener implements EventSubscriberInterface
 			$this->db->sql_freeresult($result);
 
 			$delete_ids = array_keys($delete_rows);
-			var_dump($delete_ids);
 			if (sizeof($delete_ids))
 			{
 				$this->fulltext_search->index_remove($delete_ids);
