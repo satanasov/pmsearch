@@ -122,19 +122,19 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->add_lang('ucp');
 		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=5');
-		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$form = $crawler->selectButton('Yes')->form();
 		$crawler = self::submit($form);
 		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=4');
-		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$form = $crawler->selectButton('Yes')->form();
 		$crawler = self::submit($form);
 		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=3');
-		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$form = $crawler->selectButton('Yes')->form();
 		$crawler = self::submit($form);
 		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=2');
-		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$form = $crawler->selectButton('Yes')->form();
 		$crawler = self::submit($form);
 		
 		$this->logout();
