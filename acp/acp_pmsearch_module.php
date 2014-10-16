@@ -232,7 +232,7 @@ class acp_pmsearch_module
 						'VALUE_1'		=> $statistics[0]['value_1'],
 						'STATISTIC_2'	=> (isset($statistics[0]['statistic_2'])) ? $statistics[0]['statistic_2'] : '',
 						'VALUE_2'		=> (isset($statistics[0]['value_2'])) ? $statistics[0]['value_2'] : '',
-						'CONTINUE'		=> ($this->state[0] == 'normal' && $this->state[3] == 'continue') ? 1 : 0,
+						'CONTINUE'		=> ($this->state[0] == 'normal' && (isset($this->state[3]) && $this->state[3] == 'continue')) ? 1 : 0,
 						'CONTINUE_URL'	=> append_sid($this->u_action . '&amp;action_index=create')
 						)
 					);
