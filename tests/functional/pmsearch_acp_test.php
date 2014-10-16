@@ -119,7 +119,10 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$crawler = self::request('GET', 'ucp.php?i=pm&folder=inbox');
 		
-		delete_pm($this->get_user_id('testuser1'), array(2,3,4,5), PRIVMSGS_INBOX);
+		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=5');
+		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=4');
+		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=3');
+		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=2');
 		
 		$this->logout();
 		
