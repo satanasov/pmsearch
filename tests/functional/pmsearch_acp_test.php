@@ -120,9 +120,20 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::request('GET', 'ucp.php?i=pm&folder=inbox');
 		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=5');
+		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$crawler = self::submit($form);
+		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=4');
+		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$crawler = self::submit($form);
+		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=3');
+		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$crawler = self::submit($form);
+		
 		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=2');
+		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$crawler = self::submit($form);
 		
 		$this->logout();
 		
@@ -147,12 +158,12 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
 		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
-		$form['keywords'] = 'Test';
+		$form['keywords'] = 'second';
 		
 		
 		$crawler = self::submit($form);
 		
-		$this->assertContains('5', $crawler->filter('.pagination')->text());
+		$this->assertContains('1', $crawler->filter('.pagination')->text());
 		
 		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
@@ -172,7 +183,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
 		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
-		$form['keywords'] = 'Test';
+		$form['keywords'] = 'second';
 		
 		
 		$crawler = self::submit($form);
