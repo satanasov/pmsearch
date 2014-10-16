@@ -64,10 +64,10 @@ class ucp_pmsearch_module
 					{
 						// Let's get additional info
 						$page_array = array();
-						$sql_array = 'SELECT msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_text as msg_text, msg.message_time as msg_time, msg.author_id as msg_author, u.username as msg_author_uname, u.user_colour as msg_author_colour, tmsg.pm_unread as unread, tmsg.pm_replied as replied
+						$sql_array = 'SELECT msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_text as msg_text, msg.message_time as msg_time, msg.author_id as msg_author, u.user_id, u.username as msg_author_uname, u.user_colour as msg_author_colour, tmsg.msg_id, MAX(tmsg.pm_unread) as unread, MAX(tmsg.pm_replied) as replied
 								FROM ' . PRIVMSGS_TABLE . ' as msg, ' . USERS_TABLE . ' as u, ' . PRIVMSGS_TO_TABLE . ' as tmsg
 								WHERE u.user_id = msg.author_id and (msg.msg_id = tmsg.msg_id and msg.author_id = tmsg.author_id) and ' . $db->sql_in_set('msg.msg_id', $id_ary) . '
-								GROUP BY msg.msg_id
+								GROUP BY msg.msg_id, u.user_id, tmsg.msg_id
 								ORDER BY msg.msg_id DESC';
 						//$sql = $db->sql_build_query('SELECT', $sql_array);
 						$result = $db->sql_query($sql_array);
