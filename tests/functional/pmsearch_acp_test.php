@@ -177,7 +177,7 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$crawler = self::submit($form);
 		
-		$this->assertEmpty($crawler->filter('.pagination')->text());
+		$this->assertContainsLang('NO_RESULTS_FOUND', $crawler->text());
 		
 		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
 		
