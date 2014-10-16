@@ -107,8 +107,8 @@ class pmsearch_acp_test extends pmsearch_base
 		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
 		$form['keywords'] = 'private';
 		
-		$this->assertContains('1', $crawler->filter('.pagination')->text());
-		//$this->assertContains('alalaalalalalala', $crawler->text());
+		//$this->assertContains('1', $crawler->filter('.pagination')->text());
+		$this->assertContains('alalaalalalalala', $crawler->text());
 		$this->logout();
 	}
 }
