@@ -139,5 +139,55 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$this->logout();
 	}
+	public function test_search_one_sided_there()
+	{
+		$this->login();
+		
+		$this->add_lang_ext('anavaro/pmsearch', 'info_ucp_pmsearch');
+		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
+		
+		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
+		$form['keywords'] = 'Test';
+		
+		
+		$crawler = self::submit($form);
+		
+		$this->assertContains('5', $crawler->filter('.pagination')->text());
+		
+		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
+		
+		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
+		$form['keywords'] = 'private';
+		$crawler = self::submit($form);
+		
+		$this->assertContains('1', $crawler->filter('.pagination')->text());
+		//$this->assertContains('alalaalalalalala', $crawler->text());
+		$this->logout();
+	}
+	public function test_search_one_sided_gone()
+	{
+		$this->login('testuser1');
+		
+		$this->add_lang_ext('anavaro/pmsearch', 'info_ucp_pmsearch');
+		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
+		
+		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
+		$form['keywords'] = 'Test';
+		
+		
+		$crawler = self::submit($form);
+		
+		$this->assertEmpty($crawler->filter('.pagination')->text());
+		
+		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
+		
+		$form = $crawler->selectButton($this->lang('SEARCH_PMS'))->form();
+		$form['keywords'] = 'private';
+		$crawler = self::submit($form);
+		
+		$this->assertContains('1', $crawler->filter('.pagination')->text());
+		//$this->assertContains('alalaalalalalala', $crawler->text());
+		$this->logout();
+	}
 }
 ?>
