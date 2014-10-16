@@ -112,17 +112,27 @@ class pmsearch_acp_test extends pmsearch_base
 		//$this->assertContains('alalaalalalalala', $crawler->text());
 		$this->logout();
 	}
-	public function test_remove_pm()
+	public function test_remove_pm_one_way()
 	{
+		// Log in as user and delete some mssages
+		$this->login('testuser1');
+		
+		$crawler = self::request('GET', 'ucp.php?i=pm&folder=inbox');
+		
+		delete_pm($this->get_user_id('testuser1'), array(2,3,4,5), PRIVMSGS_INBOX);
+		
+		$this->logout()
+		
+		// Login as admin - indexes should be as follows
 		$this->login();
 		
 		$this->admin_login();
 		$this->add_lang_ext('anavaro/pmsearch', 'info_acp_pmsearch');
 		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
 		
-		//$this->assertContains('11', $crawler->filter('#indexed_words')->text());
-		//$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
-		$this->assertContains('alalaalalalalala', $crawler->text());
+		$this->assertContains('26', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('75', $crawler->filter('#relative_indexes')->text());
+		//$this->assertContains('alalaalalalalala', $crawler->text());
 		
 		$this->logout();
 	}
