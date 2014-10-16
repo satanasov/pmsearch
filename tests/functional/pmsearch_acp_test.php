@@ -203,5 +203,43 @@ class pmsearch_acp_test extends pmsearch_base
 		//$this->assertContains('alalaalalalalala', $crawler->text());
 		$this->logout();
 	}
+	public function test_delete_second_side_and_index()
+	{
+		$this->login();
+		
+		$crawler = self::request('GET', 'ucp.php?i=pm&folder=sentbox');
+		
+		$this->add_lang('ucp');
+		$this->add_lang('mcp');
+		
+		$crawler = self::request('GET', 'ucp.php?i=pm&mode=compose&action=delete&f=-1&p=5');
+		$form = $crawler->selectButton('Yes')->form();
+		$crawler = self::submit($form);
+		
+		$crawler = self::request('GET', 'ucp.php?i=pm&mode=compose&action=delete&f=-1&p=4');
+		$form = $crawler->selectButton('Yes')->form();
+		$crawler = self::submit($form);
+		
+		$crawler = self::request('GET', 'ucp.php?i=pm&mode=compose&action=delete&f=-1&p=3');
+		$form = $crawler->selectButton('Yes')->form();
+		$crawler = self::submit($form);
+		
+		$crawler = self::request('GET', 'ucp.php?i=pm&mode=compose&action=delete&f=-1&p=2');
+		$form = $crawler->selectButton('Yes')->form();
+		$crawler = self::submit($form);
+		
+		$this->admin_login();
+		$this->add_lang_ext('anavaro/pmsearch', 'info_acp_pmsearch');
+		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
+		
+		$form = $crawler->selectButton($this->lang('CREATE_INDEX'))->form();
+		$crawler = self::submit($form);
+		
+		//test step 3 begins
+		$this->assertContains('11', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
+		
+		$this->logout();
+	}
 }
 ?>
