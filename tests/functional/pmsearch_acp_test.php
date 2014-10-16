@@ -122,7 +122,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->add_lang('ucp');
 		$this->add_lang('mcp');
 		
-		$crawler = self::request('GET', 'ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=0&amp;p=5');
+		$crawler = self::request('GET', 'ucp.php?i=pm&mode=compose&action=delete&f=0&p=5');
 		$this->assertContains('26', $crawler->text());
 		$form = $crawler->selectButton('Yes')->form();
 		$crawler = self::submit($form);
