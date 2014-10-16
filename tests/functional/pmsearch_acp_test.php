@@ -19,7 +19,7 @@ class pmsearch_acp_test extends pmsearch_base
 	{
 		//add users so we can send messages and search
 		$this->create_user('testuser1');
-		$this->add_user_group('NEWLY_REGISTERED', array('testuser1'));
+		$this->add_user_group('REGISTERED', array('testuser1'));
 		
 		$this->login();
 		$this->admin_login();
