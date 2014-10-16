@@ -121,7 +121,7 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		delete_pm($this->get_user_id('testuser1'), array(2,3,4,5), PRIVMSGS_INBOX);
 		
-		$this->logout()
+		$this->logout();
 		
 		// Login as admin - indexes should be as follows
 		$this->login();
