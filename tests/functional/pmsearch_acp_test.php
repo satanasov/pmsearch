@@ -238,5 +238,21 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$this->logout();
 	}
+	
+	public function test_delete_indexes_of_unread_messages()
+	{
+		$this->login();
+		
+		$message_id = $this->create_private_message('Test private message 6', 'This should delete indexes of unread messages.', array($this->get_user_id('testuser1')));
+		
+		$this->admin_login();
+		$this->add_lang_ext('anavaro/pmsearch', 'info_acp_pmsearch');
+		$crawler = self::request('GET', 'adm/index.php?i=-anavaro-pmsearch-acp-acp_pmsearch_module&mode=main&sid=' . $this->sid);
+		
+		$this->assertContains('11', $crawler->filter('#indexed_words')->text());
+		$this->assertContains('14', $crawler->filter('#relative_indexes')->text());
+		
+		$this->logout();
+	}
 }
 ?>
