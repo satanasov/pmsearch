@@ -24,7 +24,7 @@ class ucp_pmsearch_module
 	}
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache, $request, $phpbb_container, $user_loader;
+		global $db, $user, $auth, $template, $cache, $request, $phpbb_container;
 		global $config, $SID, $phpbb_root_path, $phpbb_admin_path, $phpEx, $k_config, $table_prefix;
 		//$this->var_display($action);
 		switch ($mode)
@@ -82,12 +82,12 @@ class ucp_pmsearch_module
 						$author_uid_arrray = array();
 						while ($row = $db->sql_fetchrow($result))
 						{
-							$author_uid_arrray[] = $row['msg_author'];
+							$author_uid_arrray[] = (int) $row['msg_author'];
 							$page_array[$row['msg_id']] = array(
 								'msg_id'	=> $row['msg_id'],
 								'msg_subject'	=>	$row['msg_subject'],
 								'msg_author'	=>	$row['msg_author'],
-								'msg_time'	=>	$user->format_date((int) $row['msg_time']),
+								'msg_time'	=>	(int) $row['msg_time'],
 								'unread'	=> $row['unread'],
 								'replied'	=> $row['replied']
 							);
