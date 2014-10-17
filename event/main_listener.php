@@ -98,7 +98,7 @@ class main_listener implements EventSubscriberInterface
 			$sql = 'SELECT COUNT(msg_id) as count, msg_id
 				FROM ' . PRIVMSGS_TO_TABLE . '
 				WHERE ' . $this->db->sql_in_set('msg_id', array_keys($delete_rows)) . 
-				'GROUP BY msg_id';
+				' GROUP BY msg_id';
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))
 			{
