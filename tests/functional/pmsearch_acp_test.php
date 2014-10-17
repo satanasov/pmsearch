@@ -288,7 +288,7 @@ class pmsearch_acp_test extends pmsearch_base
 		$form = $crawler->selectButton($this->lang('APPLY_PERMISSIONS'))->form();
 		$data = array(
 			'setting'	=> array(
-				$this->get_user_id('admin')	=> array(
+				$this->get_user_id('testuser1')	=> array(
 					0	=> array(
 						'u_pmsearch' => '0'
 					)
@@ -301,8 +301,6 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->assertContainsLang('AUTH_UPDATED', $crawler->filter('html')->text());
 		
 		$this->logout();
-		
-		$this->login('testuser1');
 		
 		$this->login('testuser1');
 		
