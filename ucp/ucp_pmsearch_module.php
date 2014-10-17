@@ -66,13 +66,13 @@ class ucp_pmsearch_module
 						$page_array = array();
 						// As there seems to be some problem with POSTGRES SQL I'll split the info query in two separate queries - one for the message ...
 						$sql_array = array(
-							'SELECT'	=> 'msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_time as msg_time, msg.author_id as msg_author, msgt.msg_id MAX(tmsg.pm_unread) as unread, MAX(tmsg.pm_replied) as replied',
+							'SELECT'	=> 'msg.msg_id as msg_id, msg.message_subject as msg_subject, msg.message_time as msg_time, msg.author_id as msg_author, tmsg.msg_id, MAX(tmsg.pm_unread) as unread, MAX(tmsg.pm_replied) as replied',
 							'FROM'	=> array(
 								PRIVMSGS_TABLE => 'msg',
 								PRIVMSGS_TO_TABLE => 'tmsg'
 							),
 							'WHERE'	=> 'msg.msg_id = tmsg.msg_id and msg.author_id = tmsg.author_id and ' . $db->sql_in_set('msg.msg_id', $id_ary),
-							'GROUP_BY'	=> 'msg.msg_id, msgt.msg_id',
+							'GROUP_BY'	=> 'msg.msg_id, tmsg.msg_id',
 							'ORDER_BY'	=> 'msg.msg_id DESC'
 						);
 						$sql = $db->sql_build_query('SELECT', $sql_array);
