@@ -106,7 +106,6 @@ class ucp_pmsearch_module
 						}
 						$count = 1;
 						foreach ($page_array as $VAR) {
-							
 							$template->assign_block_vars('pm_results', array(
 								'S_ROW_COUNT'	=> $count,
 								'FOLDER_IMG_STYLE'	=> ($VAR['unread'] ? 'pm_unread' : 'pm_read'),
