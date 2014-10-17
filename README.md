@@ -1,7 +1,7 @@
 PM Search
 ===========
 
-PM seach is phpBB 3.1 extension that allows users to search trough the PM archaive in the board.
+PM search is phpBB 3.1 extension that allows users to search trough the PM archive in the board.
 
 Features
 --
@@ -16,12 +16,12 @@ Features
   
   UCP
   
-    - [TODO] Search form in user PM screan
-    - [TODO] New UCP module shoung search results
+    - New UCP module for search
 	
   Events
   
-    - [TODO] Register every PM for indexing
+    - Register every PM for indexing
+	- Remove PM removes index
     
     
 Travis-ci state:

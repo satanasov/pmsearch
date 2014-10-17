@@ -44,4 +44,5 @@ $lang = array_merge($lang, array(
 	'SEARCH_ANY_TERMS'	=>	'Search for any terms',
 	'NO_RESULTS_FOUND'	=> 'No results found',
 	'SEARCH_PMS'	=> 'Search PMs',
+	'ACCESS_DENIED'	=> 'You have no authority to search in PMs',
 ));

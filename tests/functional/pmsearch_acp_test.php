@@ -268,5 +268,50 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$this->logout();
 	}
+	public function test_permission()
+	{
+		$this->login();
+		$this->admin_login();
+		$this->add_lang('acp/permissions');
+		
+		// User permissions
+		$crawler = self::request('GET', 'adm/index.php?i=acp_permissions&icat=16&mode=setting_user_global&sid=' . $this->sid);
+		$this->assertContains($this->lang('ACP_USERS_PERMISSIONS_EXPLAIN'), $this->get_content());
+
+		// Select testuser1
+		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
+		$data = array('username[0]' => 'testuser1');
+		$form->setValues($data);
+		$crawler = self::submit($form);
+		$this->assertContains($this->lang('ACL_SET'), $crawler->filter('h1')->eq(1)->text());
+		
+		$form = $crawler->selectButton($this->lang('APPLY_PERMISSIONS'))->form();
+		$data = array(
+			'setting'	=> array(
+				$this->get_user_id('admin')	=> array(
+					0	=> array(
+						'u_pmsearch' => '0'
+					)
+				),
+			),
+		);
+		$form->setValues($data);
+		$crawler = self::submit($form);
+		
+		$this->assertContainsLang('AUTH_UPDATED', $crawler->filter('html')->text());
+		
+		$this->logout();
+		
+		$this->login('testuser1');
+		
+		$this->login('testuser1');
+		
+		$this->add_lang_ext('anavaro/pmsearch', 'info_ucp_pmsearch');
+		$crawler = self::request('GET', 'ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search');
+		
+		$this->assertContainsLang('ACCESS_DENIED', $crawler->filter('html')->text());
+		
+		$this->logout();
+	}
 }
 ?>

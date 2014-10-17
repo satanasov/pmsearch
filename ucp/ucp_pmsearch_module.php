@@ -26,7 +26,11 @@ class ucp_pmsearch_module
 	{
 		global $db, $user, $auth, $template, $cache, $request, $phpbb_container;
 		global $config, $SID, $phpbb_root_path, $phpbb_admin_path, $phpEx, $k_config, $table_prefix;
-		//$this->var_display($action);
+		//$this->var_display($auth->acl_get('u_pmsearch'));
+		if (!$auth->acl_get('u_pmsearch'))
+		{
+			trigger_error('ACCESS_DENIED');
+		}
 		switch ($mode)
 		{
 			case 'search':
