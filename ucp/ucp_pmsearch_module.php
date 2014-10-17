@@ -87,7 +87,7 @@ class ucp_pmsearch_module
 								'msg_id'	=> $row['msg_id'],
 								'msg_subject'	=>	$row['msg_subject'],
 								'msg_author'	=>	$row['msg_author'],
-								'msg_time'	=>	$user->format_date($row['msg_time']),
+								'msg_time'	=>	$user->format_date((int) $row['msg_time']),
 								'unread'	=> $row['unread'],
 								'replied'	=> $row['replied']
 							);
