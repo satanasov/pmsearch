@@ -21,15 +21,9 @@ class acp_pmsearch_module
 	var $max_post_id;
 	var $batch_size = 200;
 	var $u_action;
-	function var_display($i)
-	{
-		echo "<pre>";
-		print_r($i);
-		echo "</pre>";
-	}
 	function main($id, $mode)
 	{
-		global $config, $user, $table_prefix, $db, $template, $request, $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $config, $user, $table_prefix, $db, $template, $request, $phpbb_root_path, $phpbb_log, $phpbb_admin_path, $phpEx;
 
 		switch($mode)
 		{
@@ -66,7 +60,7 @@ class acp_pmsearch_module
 
 				if($config['pmsearch_pm_index'])
 				{
-					$action_index = request_var('action_index', '');
+					$action_index = $request->variable('action_index', '');
 					$this->state = explode(',', $config['search_pm_indexing_state']);
 					if (isset($_POST['cancel']))
 					{
@@ -92,7 +86,7 @@ class acp_pmsearch_module
 						}
 						if (empty($this->state[0]))
 						{
-							$this->state[0] = request_var('target_index', 'normal');
+							$this->state[0] = $request->variable('target_index', 'normal');
 						}
 						$this->search = null;
 						$error = false;
@@ -120,7 +114,7 @@ class acp_pmsearch_module
 									{
 										$this->state = array('');
 										$this->save_state();
-										add_log('admin', 'LOG_PMSEARCH_INDEX_REMOVED', $name);
+										$phpbb_log->add('admin', 'LOG_PMSEARCH_INDEX_REMOVED', $name);
 										trigger_error($error . adm_back_link($this->u_action), E_USER_WARNING);
 									}
 								}
@@ -183,7 +177,7 @@ class acp_pmsearch_module
 									else
 									{
 										$this->state = array('');
-										add_log('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
+										$phpbb_log->add('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
 									}
 								}
 							break;
@@ -262,7 +256,7 @@ class acp_pmsearch_module
 
 		ksort($this->state);
 
-		set_config('search_pm_indexing_state', implode(',', $this->state), true);
+		$config->set('search_pm_indexing_state', implode(',', $this->state), true);
 	}
 
 	function get_max_post_id()

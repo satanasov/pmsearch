@@ -16,12 +16,6 @@ namespace anavaro\pmsearch\ucp;
 class ucp_pmsearch_module
 {
 	var $u_action;
-	function var_display($i)
-	{
-		echo "<pre>";
-		print_r($i);
-		echo "</pre>";
-	}
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $cache, $request, $phpbb_container;
