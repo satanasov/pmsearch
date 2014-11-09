@@ -16,6 +16,7 @@ namespace anavaro\pmsearch\search;
 /**
 * @ignore
 */
+/*
 if (!defined('SEARCH_RESULT_NOT_IN_CACHE'))
 {
 	define('SEARCH_RESULT_NOT_IN_CACHE', 0);
@@ -30,7 +31,7 @@ if (!defined('SEARCH_RESULT_INCOMPLETE'))
 {
 	define('SEARCH_RESULT_INCOMPLETE', 2);
 }
-
+*/
 /**
 * phpBB's own db driven fulltext search, version 2
 */
