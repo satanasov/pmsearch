@@ -543,7 +543,8 @@ class fulltext_native
 
 		// try reading the results from cache
 		$total_results = 0;
-		if ($this->obtain_ids($search_key, $total_results, $id_ary, $start, $per_page, $sort_dir) == SEARCH_RESULT_IN_CACHE)
+		//if ($this->obtain_ids($search_key, $total_results, $id_ary, $start, $per_page, $sort_dir) == SEARCH_RESULT_IN_CACHE)
+		if ($this->obtain_ids($search_key, $total_results, $id_ary, $start, $per_page, $sort_dir) == 1)
 		{
 			return $total_results;
 		}
@@ -1548,7 +1549,8 @@ class fulltext_native
 		if (!($stored_ids = $cache->get('_search_results_' . $search_key)))
 		{
 			// no search results cached for this search_key
-			return SEARCH_RESULT_NOT_IN_CACHE;
+			//return SEARCH_RESULT_NOT_IN_CACHE;
+			return 0;
 		}
 		else
 		{
@@ -1578,7 +1580,8 @@ class fulltext_native
 				// the user requested a page past the last index
 				if ($start < 0)
 				{
-					return SEARCH_RESULT_NOT_IN_CACHE;
+					//return SEARCH_RESULT_NOT_IN_CACHE;
+					return 0;
 				}
 			}
 
@@ -1602,9 +1605,11 @@ class fulltext_native
 
 			if (!$complete)
 			{
-				return SEARCH_RESULT_INCOMPLETE;
+				//return SEARCH_RESULT_INCOMPLETE;
+				return 2;
 			}
-			return SEARCH_RESULT_IN_CACHE;
+			//return SEARCH_RESULT_IN_CACHE;
+			return 1;
 		}
 	}
 
