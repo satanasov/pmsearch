@@ -249,6 +249,7 @@ class acp_pmsearch_module
 	}
 	function save_state($state = false)
 	{
+		global $config;
 		if ($state)
 		{
 			$this->state = $state;
