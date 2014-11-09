@@ -114,7 +114,7 @@ class acp_pmsearch_module
 									{
 										$this->state = array('');
 										$this->save_state();
-										$phpbb_log->add('admin', 'LOG_PMSEARCH_INDEX_REMOVED', $name);
+										add_log('admin', 'LOG_PMSEARCH_INDEX_REMOVED', $name);
 										trigger_error($error . adm_back_link($this->u_action), E_USER_WARNING);
 									}
 								}
@@ -177,7 +177,7 @@ class acp_pmsearch_module
 									else
 									{
 										$this->state = array('');
-										$phpbb_log->add('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
+										add_log('admin', 'LOG_PMSEARCH_INDEX_CREATED', $name);
 									}
 								}
 							break;
