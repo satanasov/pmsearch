@@ -39,7 +39,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PMSEARCH_TITLE'	=> 'Sökning inom PM',
+	'PMSEARCH_TITLE'	=> 'Sök inom PM',
 	'PMSEARCH_KEYWORDS_EXPLAIN'	=>	'Använd + framför ord som måste hittas och - framför ord som ej får hittas. Använd en lista av ord separerad med | i en parantes om endast ett av orden får hittas. Använd * som platshållare.',
 	'SEARCH_ALL_TERMS'	=>	'Sök alla sökord eller använd sökkriterierna som de angivits',
 	'SEARCH_ANY_TERMS'	=>	'Sök något av sökorden',
