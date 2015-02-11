@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'PMSEARCH_KEYWORDS_EXPLAIN'	=>	'Placez un <b>+</b> devant un mot qui doit être trouvé et un <b>-</b> devant un mot qui doit être exclu. Tapez une suite de mots séparés par des <b>|</b> entre crochets si uniquement un des mots doit être trouvé. Utilisez un * comme joker pour des recherches partielles.',
 	'SEARCH_ALL_TERMS'	=>	'Rechercher tous les termes ou utiliser une question comme entrée',
 	'SEARCH_ANY_TERMS'	=>	'Rechercher n’importe lequel de ces termes',
-	'NO_RESULTS_FOUND'	=> 'Aucun résultat trouvé',
+	'NO_RESULTS_FOUND'	=> 'Aucun message ne correspond à vos critères de recherche.',
 	'SEARCH_PMS'	=> 'Rechercher dans la messagerie',
 	'ACCESS_DENIED'	=> 'Vous n’avez pas l’autorisation pour chercher dans les messages privés',
 ));
