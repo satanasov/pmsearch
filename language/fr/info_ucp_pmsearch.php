@@ -44,6 +44,6 @@ $lang = array_merge($lang, array(
 	'SEARCH_ALL_TERMS'	=>	'Rechercher tous les termes ou utiliser une question comme entrée',
 	'SEARCH_ANY_TERMS'	=>	'Rechercher n’importe lequel de ces termes',
 	'NO_RESULTS_FOUND'	=> 'Aucun résultat trouvé',
-	'SEARCH_PMS'	=> 'Rechercher dans les messages privés',
+	'SEARCH_PMS'	=> 'Rechercher dans la messagerie',
 	'ACCESS_DENIED'	=> 'Vous n’avez pas l’autorisation pour chercher dans les messages privés',
 ));
