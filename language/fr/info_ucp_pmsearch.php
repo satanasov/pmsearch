@@ -2,8 +2,9 @@
 /**
 *
 * PM Search extension for the phpBB Forum Software package.
+* French translation by Galixte (http://www.galixte.com)
 *
-*
+* @copyright (c) 2014
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
 */
@@ -38,11 +39,11 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PMSEARCH_TITLE'	=> 'Search in PMs',
-	'PMSEARCH_KEYWORDS_EXPLAIN'	=>	'Place + in front of a word which must be found and - in front of a word which must not be found. Put a list of words separated by | into brackets if only one of the words must be found. Use * as a wildcard for partial matches.',
-	'SEARCH_ALL_TERMS'	=>	' Search for all terms or use query as entered',
-	'SEARCH_ANY_TERMS'	=>	'Search for any terms',
-	'NO_RESULTS_FOUND'	=> 'No results found.',
-	'SEARCH_PMS'	=> 'Search PMs',
-	'ACCESS_DENIED'	=> 'You have no authority to search in PMs',
+	'PMSEARCH_TITLE'	=> 'Rechercher dans la messagerie',
+	'PMSEARCH_KEYWORDS_EXPLAIN'	=>	'Placez un <b>+</b> devant un mot qui doit être trouvé et un <b>-</b> devant un mot qui doit être exclu. Tapez une suite de mots séparés par des <b>|</b> entre crochets si uniquement un des mots doit être trouvé. Utilisez un * comme joker pour des recherches partielles.',
+	'SEARCH_ALL_TERMS'	=>	'Rechercher tous les termes ou utiliser une question comme entrée',
+	'SEARCH_ANY_TERMS'	=>	'Rechercher n’importe lequel de ces termes',
+	'NO_RESULTS_FOUND'	=> 'Aucun message ne correspond à vos critères de recherche.',
+	'SEARCH_PMS'	=> 'Rechercher',
+	'ACCESS_DENIED'	=> 'Vous n’avez pas l’autorisation pour chercher dans les messages privés',
 ));
