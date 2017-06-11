@@ -727,7 +727,7 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 	* @param	int		$poster_id	Post author's user id
 	* @param	int		$forum_id	The id of the forum in which the post is located
 	*/
-	public function index($mode, $post_id, &$message, &$subject, $poster_id, $forum_id)
+	public function index($mode, $post_id, &$message, &$subject, $poster_id, $forum_id = '')
 	{
 		$wordlist = PRIVMSGS_TABLE . '_swl';
 		$wordmatch = PRIVMSGS_TABLE . '_swm';
