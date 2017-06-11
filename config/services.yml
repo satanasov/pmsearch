@@ -2,26 +2,39 @@ services:
     anavaro.pmsearch.listener:
         class: anavaro\pmsearch\event\main_listener
         arguments:
-            - @auth
-            - @cache
-            - @config
-            - @dbal.conn
-            - @request
-            - @template
-            - @user
-            - @anavaro.pmsearch.fulltext_native
-            - %core.root_path%
-            - %core.php_ext%
-            - %core.table_prefix%
+            - '@auth'
+            - '@cache'
+            - '@config'
+            - '@dbal.conn'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@controller.helper'
+            - '@anavaro.pmsearch.search.helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%core.table_prefix%'
         tags:
             - { name: event.listener }
-    anavaro.pmsearch.fulltext_native:
-        class: anavaro\pmsearch\search\fulltext_native
+    anavaro.pmsearch.search.helper:
+        class: anavaro\pmsearch\helper
         arguments:
-            - @auth
-            - @config
-            - @dbal.conn
-            - @user
-            - %core.table_prefix%
-            - %core.root_path%
-            - %core.php_ext%
+            - '@ext.manager'
+            - '@auth'
+            - '@config'
+            - '@dbal.conn'
+            - '@user'
+            - '@language'
+            - '@dispatcher'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+    anavaro.pmsearch.fulltext_native:
+        class: anavaro\pmadmin\search\pm_admin_fulltext_native
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@dbal.conn'
+            - '@user'
+            - '%core.table_prefix%'
+            - '%core.root_path%'
+            - '%core.php_ext%'

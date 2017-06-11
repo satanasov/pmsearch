@@ -16,11 +16,11 @@ namespace anavaro\pmsearch\ucp;
 class ucp_pmsearch_module
 {
 	var $u_action;
+	private $search_helper;
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache, $request, $phpbb_container;
-		global $config, $SID, $phpbb_root_path, $phpbb_admin_path, $phpEx, $k_config, $table_prefix;
-		//$this->var_display($auth->acl_get('u_pmsearch'));
+		global $db, $user, $auth, $template, $request, $phpbb_container;
+		$this->search_helper = $phpbb_container->get('anavaro.pmsearch.search.helper');
 		if (!$auth->acl_get('u_pmsearch'))
 		{
 			trigger_error('ACCESS_DENIED');
@@ -44,8 +44,8 @@ class ucp_pmsearch_module
 
 					$this->search = null;
 					$error = false;
-					$search_types = $this->get_search_types();
-					if ($this->init_search($search_types[0], $this->search, $error))
+					$search_types = $this->search_helper->get_search_types();
+					if ($this->search_helper->init_search($search_types[0], $this->search, $error))
 					{
 						trigger_error($error . adm_back_link($this->u_action), E_USER_WARNING);
 					}
@@ -57,7 +57,8 @@ class ucp_pmsearch_module
 					$user_id = array(
 						'' => (int) $user->data['user_id']
 					);
-					$search_count = $this->search->keyword_search('all', 'all', 'a', 0, $user_id, $id_ary, $startFrom, 25);
+					//$search_count = $this->search->keyword_search('norma', 'all', 'all', array('msg_id' => 'a'), 'msg_id', 'd', 0, array($user_id), '', $id_ary, $startFrom, 25);
+					$search_count = $this->search->keyword_search('norma', 'all', 'all', array('msg_id' => 'a'), 'msg_id', 'd', 0, array(), '', '', $user_id, '', $id_ary, $startFrom, 50);
 					if ($search_count > 0)
 					{
 						// Let's get additional info
@@ -133,42 +134,6 @@ class ucp_pmsearch_module
 					}
 					// After we got the the search count we go deeper
 				}
-			break;
 		}
-		//$this->var_display($tid);
-	}
-	//Define some helper functions
-	function get_search_types()
-	{
-		global $phpbb_root_path, $phpEx, $phpbb_extension_manager;
-
-		$finder = $phpbb_extension_manager->get_finder();
-
-		return $finder
-			->extension_suffix('_backend1')
-			->extension_directory('')
-			->core_path('ext/anavaro/pmsearch/search/')
-			->get_classes();
-	}
-
-	/**
-	* Initialises a search backend object
-	*
-	* @return false if no error occurred else an error message
-	*/
-	function init_search($type, &$search, &$error)
-	{
-		global $phpbb_root_path, $phpEx, $user, $auth, $config, $db, $table_prefix;
-
-		if (!class_exists($type) || !method_exists($type, 'keyword_search'))
-		{
-			$error = $user->lang['NO_SUCH_SEARCH_MODULE'];
-			return $error;
-		}
-
-		$error = false;
-		$search = new $type($auth, $config, $db, $user, $table_prefix, $phpbb_root_path, $phpEx);
-
-		return $error;
 	}
 }
