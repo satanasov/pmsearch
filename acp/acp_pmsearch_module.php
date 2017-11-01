@@ -16,6 +16,7 @@ namespace anavaro\pmsearch\acp;
 */
 class acp_pmsearch_module
 {
+	private $search_helper;
 	var $state;
 	var $search;
 	var $max_post_id;
@@ -24,6 +25,9 @@ class acp_pmsearch_module
 	function main($id, $mode)
 	{
 		global $config, $user, $table_prefix, $db, $template, $request, $phpbb_root_path, $phpbb_log, $phpbb_admin_path, $phpEx;
+		global $phpbb_container;
+
+		$this->search_helper = $phpbb_container->get('anavaro.pmsearch.search.helper');
 
 		switch($mode)
 		{
@@ -52,7 +56,7 @@ class acp_pmsearch_module
 					$config->set('pmsearch_search', 1);
 				}
 				$this->tpl_name		= 'acp_pmsearch';
-				$this->page_title	= 'PM Admin';
+				$this->page_title	= 'PM Search Admin';
 
 				$template->assign_var('PM_INDEX', $config['pmsearch_pm_index']);
 				$template->assign_var('PM_SEARCH', $config['pmsearch_search']);
@@ -91,7 +95,7 @@ class acp_pmsearch_module
 						$this->search = null;
 						$error = false;
 						$search_types = $this->get_search_types();
-						if ($this->init_search($search_types[0], $this->search, $error))
+						if ($this->search_helper->init_search($search_types[0], $this->search, $error))
 						{
 							trigger_error($error . adm_back_link($this->u_action), E_USER_WARNING);
 						}
@@ -189,7 +193,7 @@ class acp_pmsearch_module
 					$error = false;
 					$search_options = '';
 
-					if ($this->init_search($search_types[0], $search, $error) || !method_exists($search, 'index_created'))
+					if ($this->search_helper->init_search($search_types[0], $search, $error) || !method_exists($search, 'index_created'))
 					{
 						continue;
 					}

@@ -39,7 +39,7 @@
 
 		<!-- BEGIN pm_results -->
 			<li class="row<!-- IF pm_results.S_ROW_COUNT is odd --> bg1<!-- ELSE --> bg2<!-- ENDIF --><!-- IF pm_results.PM_CLASS --> {pm_results.PM_CLASS}<!-- ENDIF -->">
-				<dl class="icon {pm_results.FOLDER_IMG_STYLE}">
+				<dl class="row-item {pm_results.FOLDER_IMG_STYLE}">
 					<dt<!-- IF pm_results.PM_ICON_URL and S_PM_ICONS --> style="background-image: url({pm_results.PM_ICON_URL}); background-repeat: no-repeat;"<!-- ENDIF -->>
 						<!-- IF pm_results.S_PM_UNREAD --><a href="{pm_results.U_VIEW_PM}" class="icon-link"></a><!-- ENDIF -->
 						<div class="list-inner">

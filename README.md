@@ -1,7 +1,7 @@
 PM Search
 ===========
 
-PM search is phpBB 3.1 extension that allows users to search trough the PM archive in the board.
+PM search is phpBB 3.2 extension that allows users to search trough the PM archive in the board.
 
 Features
 --
@@ -26,4 +26,13 @@ Features
     
 Travis-ci state:
 
-[![Build Status](https://travis-ci.org/lucifer4o/pmsearch.svg?branch=master)](https://travis-ci.org/lucifer4o/pmsearch)
+[![Build Status](https://travis-ci.org/satanasov/pmsearch.svg?branch=master)](https://travis-ci.org/lucifer4o/pmsearch)
+
+
+##Donate
+If you like my code - buy me a beer/coffee/license for PhpStorm :D
+
+- BTC: 12afvCTp1dRrQdHaavzthZ1dNWMoi8eyc8
+- ETH: 0x363abc8edf41ac89906b20e90cf7fdc71fe78cd5
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XQ6USSXCSUM5W)

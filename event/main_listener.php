@@ -24,24 +24,54 @@ class main_listener implements EventSubscriberInterface
 			'core.delete_pm_before'	=> 'pm_delete_index',
 		);
 	}
+	private $auth;
+
+	private $cache;
+
+	private $config;
+
+	private $db;
+
+	private $request;
+
+	private $template;
+
+	private $user;
+
+	private $helper;
+
+	private $search_helper;
+
+	private $root_path;
+
+	private $php_ext;
+
+	private $table_prefix;
+
 	/**
-	* Constructor
-	* NOTE: The parameters of this method must match in order and type with
-	* the dependencies defined in the services.yml file for this service.
-	*
-	* @param \phpbb\auth		$auth		Auth object
-	* @param \phpbb\cache\service	$cache		Cache object
-	* @param \phpbb\config	$config		Config object
-	* @param \phpbb\db\driver	$db		Database object
-	* @param \phpbb\request	$request	Request object
-	* @param \phpbb\template	$template	Template object
-	* @param \phpbb\user		$user		User object
-	* @param \phpbb\content_visibility		$content_visibility	Content visibility object
-	* @param \phpbb\controller\helper		$helper				Controller helper object
-	* @param string			$root_path	phpBB root path
-	* @param string			$php_ext	phpEx
-	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \anavaro\pmsearch\search\fulltext_native $fulltext_search, $root_path, $php_ext, $table_prefix)
+	 * Constructor
+	 * NOTE: The parameters of this method must match in order and type with
+	 * the dependencies defined in the services.yml file for this service.
+	 *
+	 * @param \phpbb\auth|\phpbb\auth\auth                       $auth      Auth object
+	 * @param \phpbb\cache\service                               $cache     Cache object
+	 * @param \phpbb\config|\phpbb\config\config                 $config    Config object
+	 * @param \phpbb\db\driver|\phpbb\db\driver\driver_interface $db        Database object
+	 * @param \phpbb\request|\phpbb\request\request              $request   Request object
+	 * @param \phpbb\template|\phpbb\template\template           $template  Template object
+	 * @param \phpbb\user                                        $user      User object
+	 * @param \phpbb\controller\helper                           $helper    Controller helper object
+	 * @param \anavaro\pmsearch\helper                           $search_helper
+	 * @param string                                             $root_path phpBB root path
+	 * @param string                                             $php_ext   phpEx
+	 * @param                                                    $table_prefix
+	 * @internal param \phpbb\content_visibility $content_visibility Content visibility object
+	 */
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config,
+		\phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template,
+		\phpbb\user $user, \phpbb\controller\helper $helper,
+		\anavaro\pmsearch\helper $search_helper,
+		$root_path, $php_ext, $table_prefix)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -50,10 +80,18 @@ class main_listener implements EventSubscriberInterface
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
-		$this->fulltext_search = $fulltext_search;
+		$this->helper = $helper;
+		$this->search_helper = $search_helper;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 		$this->table_prefix = $table_prefix;
+
+		$error = false;
+		$search_types = $this->search_helper->get_search_types();
+		if ($this->search_helper->init_search($search_types[0], $this->fulltext_search, $error))
+		{
+			trigger_error($error, E_USER_WARNING);
+		}
 	}
 
 	public function	pm_search_main($event)

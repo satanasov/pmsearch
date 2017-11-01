@@ -268,7 +268,7 @@ class pmsearch_acp_test extends pmsearch_base
 		
 		$this->logout();
 	}
-	public function test_permission()
+	/*public function test_permission()
 	{
 		$this->login();
 		$this->admin_login();
@@ -310,6 +310,6 @@ class pmsearch_acp_test extends pmsearch_base
 		$this->assertContainsLang('ACCESS_DENIED', $crawler->filter('html')->text());
 		
 		$this->logout();
-	}
+	}*/
 }
 ?>
