@@ -44,12 +44,12 @@ $lang = array_merge($lang, array(
 
 	//ACP PM Admin Settings page
 	'PMSEARCH_ADMIN'	=> 'Search in PMs',
-	'PMSEARCH_ADMIN_EXPLAIN'	=> 'From here you can set some of options related to user search in PMs',
+	'PMSEARCH_ADMIN_EXPLAIN'	=> 'From here you can set some of options related to user search in PMs.',
 	'PMSEARCH_SETTINGS'	=> 'Options',
 	'PMSEARCH_PM_INDEX'	=> 'PM Indexing',
-	'PMSEARCH_PM_INDEX_EXPLAIN'	=> 'From here you can allow indexing<br /><b>(Warning! Search will not work if you have no indexing)</b>',
+	'PMSEARCH_PM_INDEX_EXPLAIN'	=> 'From here you can allow indexing <br /><b>(Warning! Search will not work if you have no indexing)</b>.',
 	'PMSEARCH_PM_SEARCH'	=>	'Allow search',
-	'PMSEARCH_PM_SEARCH_EXPLAIN'	=> 'Globally allow (or deny) search in PMs',
+	'PMSEARCH_PM_SEARCH_EXPLAIN'	=> 'Globally allow (or deny) search in PMs.',
 	'DELETE_INDEX'	=> 'Delete indexes',
 	'CREATE_INDEX'	=> 'Create indexes',
 
