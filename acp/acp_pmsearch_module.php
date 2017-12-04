@@ -56,7 +56,7 @@ class acp_pmsearch_module
 					$config->set('pmsearch_search', 1);
 				}
 				$this->tpl_name		= 'acp_pmsearch';
-				$this->page_title	= 'PM Search Admin';
+				$this->page_title	= 'PMSEARCH_ADMIN';
 
 				$template->assign_var('PM_INDEX', $config['pmsearch_pm_index']);
 				$template->assign_var('PM_SEARCH', $config['pmsearch_search']);
