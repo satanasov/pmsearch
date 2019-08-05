@@ -46,4 +46,7 @@ $lang = array_merge($lang, array(
 	'NO_RESULTS_FOUND'	=> 'Aucun message ne correspond à vos critères de recherche.',
 	'SEARCH_PMS'	=> 'Rechercher',
 	'ACCESS_DENIED'	=> 'Vous n’avez pas l’autorisation pour rechercher dans les messages privés.',
+
+	// Added in version 1.0.1
+	'SEARCH_FOR_NICK'	=> 'Search with nick',
 ));

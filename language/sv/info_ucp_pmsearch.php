@@ -46,4 +46,7 @@ $lang = array_merge($lang, array(
 	'NO_RESULTS_FOUND'	=> 'Inga sökresultat',
 	'SEARCH_PMS'	=> 'Sök inom PM',
 	'ACCESS_DENIED'	=> 'Du är ej behörig att söka inom PM',
+
+	// Added in version 1.0.1
+	'SEARCH_FOR_NICK'	=> 'Search with nick',
 ));

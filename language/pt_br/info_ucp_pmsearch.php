@@ -45,4 +45,7 @@ $lang = array_merge($lang, array(
 	'NO_RESULTS_FOUND'	=> 'Nenhum resultado encontrado.',
 	'SEARCH_PMS'	=> 'Pesquisar MPs',
 	'ACCESS_DENIED'	=> 'Você não tem autoridade para pesquisar em MPs',
+
+	// Added in version 1.0.1
+	'SEARCH_FOR_NICK'	=> 'Search with nick',
 ));
