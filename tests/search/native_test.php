@@ -42,7 +42,7 @@ class native_test extends \phpbb_search_test_case
 		return $this->createXMLDataSet(dirname(__FILE__) . '/fixtures/fixture.xml');
 	}
 
-	protected function setUp(): void
+	protected function setUp()
 	{
 		global $phpbb_root_path, $phpEx, $config, $user, $cache;
 		parent::setUp();
