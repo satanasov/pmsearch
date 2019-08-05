@@ -25,11 +25,13 @@
         <column>author_id</column>
         <column>message_text</column>
         <column>to_address</column>
+        <column>bcc_address</column>
         <row>
             <value>1</value>
             <value>2</value>
             <value>hahahhahahahaha</value>
-            <value>'u_5'</value>
+            <value>u_5</value>
+            <value>null</value>
         </row>
     </table>
     <table name="phpbb_privmsgs_to">
