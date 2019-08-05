@@ -1127,7 +1127,7 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 				break;
 
 				case 'sqlite3':
-					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
+					$sql_array_count['SELECT'] = 'msg.msg_id';
 					$sql = 'SELECT COUNT(msg_id) as total_results
 							FROM (' . $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) . ')';
 
