@@ -33,12 +33,42 @@
             <value>u_5</value>
             <value>null</value>
         </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+            <value>hahahhahahahaha</value>
+            <value>u_10</value>
+            <value>null</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>10</value>
+            <value>hahahhahahahaha</value>
+            <value>u_2</value>
+            <value>null</value>
+        </row>
     </table>
     <table name="phpbb_privmsgs_to">
         <column>msg_id</column>
         <column>user_id</column>
         <row>
             <value>1</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>10</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>10</value>
+        </row>
+        <row>
+            <value>3</value>
             <value>2</value>
         </row>
     </table>

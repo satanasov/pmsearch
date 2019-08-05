@@ -64,5 +64,7 @@ class native_test extends \phpbb_search_test_case
 		$this->assertEquals(false, $all_ids);
 		$all_ids = $this->search->user_search(5, $test_ary, $count, 5);
 		$this->assertEquals(1, $all_ids);
+		$all_ids = $this->search->user_search(10, $test_ary, $count, 5);
+		$this->assertEquals(2, $all_ids);
 	}
 }
