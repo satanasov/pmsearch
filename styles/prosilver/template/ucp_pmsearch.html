@@ -5,8 +5,9 @@
 		<dl>
 			<dt><label for="keywords">{L_SEARCH_KEYWORDS}{L_COLON}</label><br /><span>{L_PMSEARCH_KEYWORDS_EXPLAIN}</span></dt>
 			<dd><input type="search" class="inputbox" name="keywords" id="keywords" size="40" title="{L_SEARCH_KEYWORDS}" value="{S_KEYWORDS}" /></dd>
-			<dd><label for="terms1"><input type="radio" name="terms" id="terms1" value="all" checked="checked" /> {L_SEARCH_ALL_TERMS}</label></dd>
-			<dd><label for="terms2"><input type="radio" name="terms" id="terms2" value="any" /> {L_SEARCH_ANY_TERMS}</label></dd>
+			<dd><label for="terms1"><input type="radio" name="terms" id="terms1" value="all" <!-- IF SEARCH_TEARM_TYPE == 1 -->checked="checked" <!-- ENDIF --> /> {L_SEARCH_ALL_TERMS}</label></dd>
+			<dd><label for="terms2"><input type="radio" name="terms" id="terms2" value="any" <!-- IF SEARCH_TEARM_TYPE == 2 -->checked="checked" <!-- ENDIF --> /> {L_SEARCH_ANY_TERMS}</label></dd>
+			<dd><label for="terms3"><input type="radio" name="terms" id="terms3" value="nick" <!-- IF SEARCH_TEARM_TYPE == 3 -->checked="checked" <!-- ENDIF --> /> {L_SEARCH_FOR_NICK}</label></dd>
 		</dl>
 	</fieldset>
 	<fieldset class="submit-buttons">

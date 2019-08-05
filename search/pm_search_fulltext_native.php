@@ -1073,4 +1073,142 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 		$this->stats['total_words']		= $this->db->get_estimated_row_count(PRIVMSGS_TABLE . '_swl');
 		$this->stats['total_matches']	= $this->db->get_estimated_row_count(PRIVMSGS_TABLE . '_swm');
 	}
+
+	/**
+	 * Get corespondence with user ...
+	 *
+	 * This is a part of the july sprint for F-bg.org
+	 *
+	 * @param $target_id	Should be the target user's ID
+	 * @param $start		If we have pagination - start page
+	 * @param $per_page
+	 * @return bool
+	 */
+	public function user_search($target_id, &$id_ary, &$start, $per_page)
+	{
+		$messages_table = PRIVMSGS_TABLE;
+		$messages_to_table = PRIVMSGS_TO_TABLE;
+
+		//Sanity check -> are we getting user id or are we being scamed.
+
+		if (!is_numeric($target_id))
+		{
+			return false;
+		}
+		// Let's get messages we have between users (and don't filter them, becouse we don't know who deleted what.
+		$sql_array = array(
+			'SELECT'	=> 'msg.msg_id',
+			'FROM'		=> array(
+				$messages_table => 'msg',
+				$messages_to_table => 'mt',
+			),
+
+			'WHERE'	=> 'msg.msg_id = mt.msg_id AND (((msg.author_id = ' . $this->user->data['user_id'] . ' AND msg.to_address LIKE \'u_' . $target_id .'\') OR (msg.author_id = ' . $target_id . ' AND msg.to_address LIKE \'u_' . $this->user->data['user_id'] .'\')) AND mt.user_id = ' . $this->user->data['user_id'] . ')',
+
+		);
+
+		// Let's get counts and such
+		$total_results = 0;
+		$is_mysql = false;
+		// if the total result count is not cached yet, retrieve it from the db
+		if (!$total_results)
+		{
+			$sql = '';
+			$sql_array_count = $sql_array;
+			switch ($this->db->get_sql_layer())
+			{
+				case 'mysql4':
+				case 'mysqli':
+
+					// 3.x does not support SQL_CALC_FOUND_ROWS
+					// $sql_array['SELECT'] = 'SQL_CALC_FOUND_ROWS ' . $sql_array['SELECT'];
+					$is_mysql = true;
+
+				break;
+
+				case 'sqlite3':
+					$sql_array_count['SELECT'] = 'DISTINCT msg.msg_id';
+					$sql = 'SELECT COUNT(msg_id) as total_results
+							FROM (' . $this->db->sql_build_query('SELECT_DISTINCT', $sql_array_count) . ')';
+
+				// no break
+
+				default:
+					$sql_array_count['SELECT'] = 'COUNT(DISTINCT msg.msg_id) AS total_results';
+					$sql = (!$sql) ? $this->db->sql_build_query('SELECT', $sql_array_count) : $sql;
+
+					$result = $this->db->sql_query($sql);
+					$total_results = (int) $this->db->sql_fetchfield('total_results');
+					$this->db->sql_freeresult($result);
+
+					if (!$total_results)
+					{
+						return false;
+					}
+				break;
+			}
+
+			unset($sql_array_count, $sql);
+		}
+		// if using mysql and the total result count is not calculated yet, get it from the db
+		if (!$total_results && $is_mysql)
+		{
+			// Also count rows for the query as if there was not LIMIT. Add SQL_CALC_FOUND_ROWS to SQL
+			$sql_array['SELECT'] = 'SQL_CALC_FOUND_ROWS ' . $sql_array['SELECT'];
+		}
+
+		$sql_array['ORDER_BY'] = 'msg.msg_id DESC';
+
+		$sql = $this->db->sql_build_query('SELECT_DISTINCT', $sql_array);
+
+		$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$id_ary[] = (int) $row['msg_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		if (!$total_results && $is_mysql)
+		{
+			// Get the number of results as calculated by MySQL
+			$sql_count = 'SELECT FOUND_ROWS() as total_results';
+			$result = $this->db->sql_query($sql_count);
+			$total_results = (int) $this->db->sql_fetchfield('total_results');
+			$this->db->sql_freeresult($result);
+
+			if (!$total_results)
+			{
+				return false;
+			}
+		}
+
+		if ($start >= $total_results)
+		{
+			$start = floor(($total_results - 1) / $per_page) * $per_page;
+
+			$result = $this->db->sql_query_limit($sql, $this->config['search_block_size'], $start);
+
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				$id_ary[] = (int) $row['msg_id'];
+			}
+			$this->db->sql_freeresult($result);
+
+		}
+
+		// store the ids, from start on then delete anything that isn't on the current page because we only need ids for one page
+		$search_key = array(
+			$this->user->data['user_id'],
+			$target_id
+		);
+		$search_key = implode(';', $search_key);
+		$author_ary = array();
+		$sort_dir = 'a';
+		$this->save_ids(md5($search_key), $this->search_query, $author_ary, $total_results, $id_ary, $start, $sort_dir);
+		$id_ary = array_slice($id_ary, 0, (int) $per_page);
+
+		return $total_results;
+
+	}
 }

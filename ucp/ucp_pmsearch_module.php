@@ -17,9 +17,16 @@ class ucp_pmsearch_module
 {
 	var $u_action;
 	private $search_helper;
+	private $config;
+	private $terms_ary = array(
+		'all'	=> 1,
+		'any'	=> 2,
+		'nick'	=> 3,
+	);
 	function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $request, $phpbb_container;
+		global $db, $user, $auth, $template, $request, $phpbb_container, $config;
+		$this->config = $config;
 		$this->search_helper = $phpbb_container->get('anavaro.pmsearch.search.helper');
 		if (!$auth->acl_get('u_pmsearch'))
 		{
@@ -38,10 +45,6 @@ class ucp_pmsearch_module
 
 				if ($keywords)
 				{
-					$template->assign_vars(array(
-						'S_KEYWORDS'	=>	$keywords
-					));
-
 					$this->search = null;
 					$error = false;
 					$search_types = $this->search_helper->get_search_types();
@@ -51,15 +54,34 @@ class ucp_pmsearch_module
 					}
 					$search_count = 0;
 					$startFrom = $request->variable('start', 0);
-					$this->search->split_keywords($keywords, $terms);
 					$id_ary = array();
-
 					$user_id = array(
 						'' => (int) $user->data['user_id']
 					);
-					//$search_count = $this->search->keyword_search('norma', 'all', 'all', array('msg_id' => 'a'), 'msg_id', 'd', 0, array($user_id), '', $id_ary, $startFrom, 25);
-					$search_count = $this->search->keyword_search('norma', 'all', 'all', array('msg_id' => 'a'), 'msg_id', 'd', 0, array(), '', '', $user_id, '', $id_ary, $startFrom, 50);
-					if ($search_count > 0)
+					//What are we searching for?
+					if ($terms != 'nick')
+					{
+						$this->search->split_keywords($keywords, $terms);
+						//$search_count = $this->search->keyword_search('norma', 'all', 'all', array('msg_id' => 'a'), 'msg_id', 'd', 0, array($user_id), '', $id_ary, $startFrom, 25);
+						$search_count = $this->search->keyword_search('norma', 'all', 'all', array('msg_id' => 'a'), 'msg_id', 'd', 0, array(), '', '', $user_id, '', $id_ary, $startFrom, $this->config['search_block_size']);
+
+					}
+					else
+					{
+						// So do we have user_id or username?
+						if (!is_numeric($keywords))
+						{
+							// It's username ... let's get ID
+							$sql = 'SELECT user_id FROM ' . USERS_TABLE . ' WHERE username_clean LIKE \'' . utf8_clean_string($keywords) . '\'';
+							$result = $db->sql_query($sql);
+							$user_id = $db->sql_fetchrow($result);
+							$keywords = $user_id['user_id'];
+						}
+
+						$search_count = $this->search->user_search($keywords, $id_ary, $startFrom, $this->config['search_block_size']);
+					}
+
+					if ($search_count > 0 )
 					{
 						// Let's get additional info
 						$page_array = array();
@@ -91,6 +113,10 @@ class ucp_pmsearch_module
 								'replied'	=> $row['replied']
 							);
 						}
+						if (is_numeric($keywords))
+						{
+							$author_uid_arrray[] = (int) $keywords;
+						}
 						$db->sql_freeresult($result);
 						// ... one for the authors on this page
 						$authors_array = array();
@@ -119,8 +145,20 @@ class ucp_pmsearch_module
 
 						$pagination = $phpbb_container->get('pagination');
 						$base_url = append_sid('ucp.php?i=' . $id . '&mode=' . $mode . '&keywords=' . $keywords . '&terms=' . $terms);
-						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 25, $startFrom);
+						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 1, $startFrom);
 						$pageNumber = $pagination->get_on_page(25, $startFrom);
+						if (is_numeric($keywords))
+						{
+							$template->assign_vars(array(
+								'S_KEYWORDS'	=> $authors_array[$keywords]['username']
+							));
+						}
+						else
+						{
+							$template->assign_vars(array(
+								'S_KEYWORDS'	=>	$keywords
+							));
+						}
 						$template->assign_vars(array(
 							'PAGE_NUMBER'	=> $pagination->on_page($search_count, 25, $startFrom),
 							'TOTAL_MESSAGES'	=> $search_count,
@@ -134,6 +172,9 @@ class ucp_pmsearch_module
 					}
 					// After we got the the search count we go deeper
 				}
+				$template->assign_vars(array(
+					'SEARCH_TEARM_TYPE' => $this->terms_ary[$terms]
+				));
 		}
 	}
 }
