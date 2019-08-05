@@ -26,7 +26,7 @@ Features
     
 Travis-ci state:
 
-[![Build Status](https://travis-ci.org/satanasov/pmsearch.svg?branch=master)](https://travis-ci.org/lucifer4o/pmsearch)
+[![Build Status](https://travis-ci.org/satanasov/pmsearch.svg?branch=master)](https://travis-ci.org/satanasov/pmsearch)
 
 
 ##Donate
