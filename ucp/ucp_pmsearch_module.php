@@ -145,8 +145,8 @@ class ucp_pmsearch_module
 
 						$pagination = $phpbb_container->get('pagination');
 						$base_url = append_sid('ucp.php?i=' . $id . '&mode=' . $mode . '&keywords=' . $keywords . '&terms=' . $terms);
-						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, 1, $startFrom);
-						$pageNumber = $pagination->get_on_page(25, $startFrom);
+						$pagination->generate_template_pagination($base_url, 'pagination', 'start', $search_count, $this->config['search_block_size'], $startFrom);
+						$pageNumber = $pagination->get_on_page($this->config['search_block_size'], $startFrom);
 						if (is_numeric($keywords))
 						{
 							$template->assign_vars(array(
@@ -160,7 +160,7 @@ class ucp_pmsearch_module
 							));
 						}
 						$template->assign_vars(array(
-							'PAGE_NUMBER'	=> $pagination->on_page($search_count, 25, $startFrom),
+							'PAGE_NUMBER'	=> $pagination->on_page($search_count, $this->config['search_block_size'], $startFrom),
 							'TOTAL_MESSAGES'	=> $search_count,
 							'HAS_RESULTS'	=> 1,
 						));
