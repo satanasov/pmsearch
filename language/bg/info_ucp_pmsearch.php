@@ -48,4 +48,6 @@ $lang = array_merge($lang, array(
 
 	// Added in version 1.0.1
 	'SEARCH_FOR_NICK'	=> 'Търси за ник',
+	'SEARCH_WITH_USER'	=> 'Търси',
+	'SEARCH_WITH_USER_LANG'	=> 'Покажи кореспонденция с потребителя',
 ));

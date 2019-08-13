@@ -22,6 +22,7 @@ class main_listener implements EventSubscriberInterface
 		return array(
 			'core.submit_pm_after'	       => 'pm_search_main',
 			'core.delete_pm_before'	=> 'pm_delete_index',
+			'core.memberlist_view_profile'	       => 'pm_search_with_user',
 		);
 	}
 	private $auth;
@@ -153,5 +154,15 @@ class main_listener implements EventSubscriberInterface
 				$this->fulltext_search->index_remove($delete_ids);
 			}
 		}
+	}
+
+	public function pm_search_with_user($event)
+	{
+		$target = $event['member']['user_id'];
+		$url = generate_board_url() . '/ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search&terms=nick&keywords=' . $target;
+		$this->template->assign_vars(array(
+			'S_SEARCH_WITH_USER'	=> true,
+			'U_SEARCH_WITH_USER'	=> append_sid($url),
+		));
 	}
 }
