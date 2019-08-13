@@ -128,7 +128,7 @@ class main_listener implements EventSubscriberInterface
 		$url = generate_board_url() . '/ucp.php?i=\anavaro\pmsearch\ucp\ucp_pmsearch_module&mode=search&terms=nick&keywords=' . $target;
 		$this->template->assign_vars(array(
 			'S_SEARCH_WITH_USER'	=> true,
-			'U_SEARCH_WITH_USER'	=> append_sid($url),
+			'U_SEARCH_WITH_USER'	=> $url
 		));
 	}
 }
