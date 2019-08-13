@@ -2,18 +2,10 @@ services:
     anavaro.pmsearch.listener:
         class: anavaro\pmsearch\event\main_listener
         arguments:
-            - '@auth'
-            - '@cache'
             - '@config'
             - '@dbal.conn'
-            - '@request'
             - '@template'
-            - '@user'
-            - '@controller.helper'
             - '@anavaro.pmsearch.search.helper'
-            - '%core.root_path%'
-            - '%core.php_ext%'
-            - '%core.table_prefix%'
         tags:
             - { name: event.listener }
     anavaro.pmsearch.search.helper:
