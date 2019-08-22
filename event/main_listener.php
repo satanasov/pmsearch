@@ -20,6 +20,7 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
+			'core.permissions'	       => 'acl_perms_add',
 			'core.submit_pm_after'	       => 'pm_search_main',
 			'core.delete_pm_before'	=> 'pm_delete_index',
 			'core.memberlist_view_profile'	       => 'pm_search_with_user',
@@ -59,6 +60,13 @@ class main_listener implements EventSubscriberInterface
 		{
 			trigger_error($error, E_USER_WARNING);
 		}
+	}
+
+	public function acl_perms_add($event)
+	{
+		$permissions = $event['permissions'];
+		$permissions['u_pmsearch'] = array('lang' => 'ACL_U_PMSEARCH', 'cat' => 'misc');
+		$event['permissions'] = $permissions;
 	}
 
 	public function	pm_search_main($event)

@@ -71,6 +71,7 @@ class main_event_test extends \phpbb_database_test_case
 	public function test_getSubscribedEvents()
 	{
 		$this->assertEquals(array(
+			'core.permissions',
 			'core.submit_pm_after',
 			'core.delete_pm_before',
 			'core.memberlist_view_profile'
