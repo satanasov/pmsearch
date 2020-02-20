@@ -42,7 +42,7 @@ class native_test extends \phpbb_search_test_case
 		return $this->createXMLDataSet(dirname(__FILE__) . '/fixtures/fixture.xml');
 	}
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		global $phpbb_root_path, $phpEx, $config, $user, $cache;
 		parent::setUp();
@@ -52,7 +52,16 @@ class native_test extends \phpbb_search_test_case
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 		$error = null;
 		$class = self::get_search_wrapper('\anavaro\pmsearch\search\pm_search_fulltext_native');
+		if (PHP_VERSION_ID > 70399)
+		{
+			$errorlevel=error_reporting();
+			error_reporting(0);
+		}
 		$user->data['user_id'] = 2;
+		if (PHP_VERSION_ID > 70399)
+		{
+			error_reporting($errorlevel);
+		}
 		$this->search = new $class($error, $phpbb_root_path, $phpEx, null, $config, $this->db, $user, $phpbb_dispatcher);
 	}
 

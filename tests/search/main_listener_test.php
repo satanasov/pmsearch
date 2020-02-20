@@ -38,7 +38,7 @@ class main_event_test extends \phpbb_database_test_case
 	/**
 	 * Setup test environment
 	 */
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 

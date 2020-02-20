@@ -19,15 +19,15 @@ class pmsearch_base extends \phpbb_functional_test_case
 	{
 		return array('anavaro/pmsearch');
 	}
-	
-	public function setUp()
+
+	public function setUp() : void
 	{
 		parent::setUp();
 	}
-	
+
 	public function get_user_id($username)
 	{
-		$sql = 'SELECT user_id, username 
+		$sql = 'SELECT user_id, username
 				FROM ' . USERS_TABLE . '
 				WHERE username_clean = \''.$this->db->sql_escape(utf8_clean_string($username)).'\'';
 		$result = $this->db->sql_query($sql);
