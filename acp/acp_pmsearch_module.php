@@ -195,7 +195,7 @@ class acp_pmsearch_module
 
 					if ($this->search_helper->init_search($search_types[0], $search, $error) || !method_exists($search, 'index_created'))
 					{
-						continue;
+						break;
 					}
 
 					//Let's build normal
