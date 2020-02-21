@@ -1,6 +1,8 @@
 PM Search
 ===========
 
+[![Build Status](https://travis-ci.org/satanasov/pmsearch.svg?branch=master)](https://travis-ci.org/satanasov/pmsearch) [![Code Coverage](https://scrutinizer-ci.com/g/satanasov/pmsearch/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/satanasov/pmsearch/?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/satanasov/pmsearch/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/satanasov/pmsearch/?branch=master)
+
 PM search is phpBB 3.2 extension that allows users to search trough the PM archive in the board.
 
 Features
@@ -24,7 +26,6 @@ Features
 	- Remove PM removes index
     
     
-Travis-ci state:
 
 [![Build Status](https://travis-ci.org/satanasov/pmsearch.svg?branch=master)](https://travis-ci.org/satanasov/pmsearch)
 
