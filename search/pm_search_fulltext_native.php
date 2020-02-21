@@ -616,6 +616,7 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 
 		$is_mysql = false;
 		// if the total result count is not cached yet, retrieve it from the db
+
 		if (!$total_results)
 		{
 			$sql = '';
@@ -623,7 +624,7 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 			switch ($this->db->get_sql_layer())
 			{
 				case 'mysql4':
-				case 'mysqli':
+				//case 'mysqli':
 
 					// 3.x does not support SQL_CALC_FOUND_ROWS
 					// $sql_array['SELECT'] = 'SQL_CALC_FOUND_ROWS ' . $sql_array['SELECT'];
@@ -652,7 +653,6 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 					}
 				break;
 			}
-
 			unset($sql_array_count, $sql);
 		}
 
@@ -680,8 +680,12 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 		{
 			$id_ary[] = (int) $row['msg_id'];
 		}
+
 		$this->db->sql_freeresult($result);
 
+		/**
+		 * There seems to be issue with SELECT FOUND_ROWS() so we will need to think of something else.
+		 */
 		if (!$total_results && $is_mysql)
 		{
 			// Get the number of results as calculated by MySQL
@@ -689,7 +693,6 @@ class pm_search_fulltext_native extends \phpbb\search\fulltext_native
 			$result = $this->db->sql_query($sql_count);
 			$total_results = (int) $this->db->sql_fetchfield('total_results');
 			$this->db->sql_freeresult($result);
-
 			if (!$total_results)
 			{
 				return false;
